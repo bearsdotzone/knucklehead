@@ -2841,7 +2841,7 @@ __metadata:
     eslint-plugin-libram: "npm:^0.5.3"
     grimoire-kolmafia: "npm:^0.3.33"
     kolmafia: "npm:^5.28829.0"
-    libram: "npm:^0.10.0"
+    libram: "npm:^0.11.14"
     prettier: "npm:^3.4.2"
     typescript: "npm:^5.7.3"
     typescript-eslint: "npm:^8.19.1"
@@ -2865,14 +2865,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"libram@npm:^0.10.0":
-  version: 0.10.18
-  resolution: "libram@npm:0.10.18"
+"libram@npm:^0.11.14":
+  version: 0.11.14
+  resolution: "libram@npm:0.11.14"
   dependencies:
     html-entities: "npm:^2.5.2"
   peerDependencies:
     kolmafia: ^5.28100.0
-  checksum: 10c0/d3e6a88d4fbbf1e9beece4be2235c80bbe8801b81c98c70199a75ae4dd3fd2af67ca287537f9cf9f2de9e052a0189b72ec1a84ab1c03726664e8ba2c8409bea7
+  checksum: 10c0/99215bdc423c08a4908bc103ba5c547a0515a32d9a9422e3930db6002a2e56d73bfccc6c74a6002fffb89266f28fbcaef6eaa40f353baf84779c37f5389e5269
   languageName: node
   linkType: hard
 

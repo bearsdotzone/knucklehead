@@ -3,17 +3,14 @@ import {
   availableAmount,
   buy,
   cliExecute,
-  getProperty,
   gitExists,
   mallPrice,
   myAdventures,
   putShop,
-  setProperty,
-  toItem,
   visit,
   visitUrl
 } from "kolmafia";
-import { $coinmaster, $familiar, $item, $location, Macro } from "libram";
+import { $coinmaster, $familiar, $item, $location, get, Macro, set } from "libram";
 
 const TaskUnlockStore: Task = {
   name: "Unlock Skeleton Store",
@@ -37,7 +34,7 @@ const TaskGetScripts: Task = {
 
 const TaskDiet: Task = {
   name: "Diet",
-  completed: () => myAdventures() >= 100 - parseInt(getProperty("_knuckleboneDrops")),
+  completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
   do: () => {
     cliExecute(`c2t_apron.ash`);
   },
@@ -48,7 +45,7 @@ const TaskDiet: Task = {
     }
   ],
   prepare: () => {
-    setProperty("autoSatisfyWithMall", "true");
+    set("autoSatisfyWithMall", true);
   },
   limit: {
     tries: 5,
@@ -57,7 +54,7 @@ const TaskDiet: Task = {
 
 const TaskFightSkeletons: Task = {
   name: "Fight Skeletons",
-  completed: () => getProperty("_knuckleboneDrops") === "100",
+  completed: () => get("_knuckleboneDrops") === 100,
   do: $location`The Skeleton Store`,
   combat: new CombatStrategy().autoattack(Macro.attack().repeat()),
   outfit: {
@@ -73,8 +70,8 @@ const TaskFightSkeletons: Task = {
 const TaskBuyLoot: Task = {
   name: "Buy SOCP Shop Item",
   ready: () => {
-    const bonePrice = parseInt(getProperty("_crimboPastDailySpecialPrice"));
-    const specialItem = toItem(parseInt(getProperty("_crimboPastDailySpecialItem")));
+    const bonePrice = get("_crimboPastDailySpecialPrice");
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`big rock`;
     const availableKnucklebones = availableAmount($item`knucklebone`);
     const specialItemValue = mallPrice(specialItem);
 
@@ -85,7 +82,7 @@ const TaskBuyLoot: Task = {
     visit($coinmaster`Skeleton of Crimbo Past`);
   },
   do: () => {
-    const specialItem = toItem(parseInt(getProperty("_crimboPastDailySpecialItem")));
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`big rock`;
     const specialItemValue = mallPrice(specialItem);
 
     buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
