@@ -2,6 +2,7 @@ import { CombatStrategy, Engine, Task } from "grimoire-kolmafia";
 import {
   cliExecute,
   getProperty,
+  gitExists,
   myAdventures,
   setProperty,
   visitUrl
@@ -15,6 +16,17 @@ const TaskUnlockStore: Task = {
     visitUrl("shop.php?whichshop=meatsmith&action=talk", true);
   },
   limit: { tries: 1 },
+};
+
+const TaskGetScripts: Task = {
+  name: "Get Scripts",
+  completed: () => gitExists("C2Talon-c2t_apron-master"),
+  do: () => {
+    cliExecute("git checkout https://github.com/C2Talon/c2t_apron.git master");
+  },
+  limit: {
+    tries: 1
+  }
 };
 
 const TaskDiet: Task = {
@@ -31,7 +43,6 @@ const TaskDiet: Task = {
   ],
   prepare: () => {
     setProperty("autoSatisfyWithMall", "true");
-    cliExecute("git checkout https://github.com/C2Talon/c2t_apron.git master");
   },
   limit: {
     tries: 5,
@@ -55,6 +66,7 @@ const TaskFightSkeletons: Task = {
 
 export function main(): void {
   const engine = new Engine([
+    TaskGetScripts,
     TaskUnlockStore,
     TaskDiet,
     TaskFightSkeletons
