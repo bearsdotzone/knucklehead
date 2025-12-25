@@ -4246,6 +4246,17 @@ var TaskUnlockStore = {
   limit: {
     tries: 1
   }
+}, TaskGetScripts = {
+  name: "Get Scripts",
+  completed: function() {
+    return (0, import_kolmafia11.gitExists)("C2Talon-c2t_apron-master");
+  },
+  do: function() {
+    (0, import_kolmafia11.cliExecute)("git checkout https://github.com/C2Talon/c2t_apron.git master");
+  },
+  limit: {
+    tries: 1
+  }
 }, TaskDiet = {
   name: "Diet",
   completed: function() {
@@ -4259,7 +4270,7 @@ var TaskUnlockStore = {
     price: 5e3
   }],
   prepare: function() {
-    (0, import_kolmafia11.setProperty)("autoSatisfyWithMall", "true"), (0, import_kolmafia11.cliExecute)("git checkout https://github.com/C2Talon/c2t_apron.git master");
+    (0, import_kolmafia11.setProperty)("autoSatisfyWithMall", "true");
   },
   limit: {
     tries: 5
@@ -4281,7 +4292,7 @@ var TaskUnlockStore = {
   }
 };
 function main() {
-  var engine = new Engine([TaskUnlockStore, TaskDiet, TaskFightSkeletons]);
+  var engine = new Engine([TaskGetScripts, TaskUnlockStore, TaskDiet, TaskFightSkeletons]);
   engine.run();
 }
 // Annotate the CommonJS export names for ESM import in node:
