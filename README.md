@@ -1,4 +1,4 @@
-# skeleton
+# knucklefarm
 
 Automate Skeleton of Crimbo Past knucklebones for alts
 
@@ -22,4 +22,4 @@ When you're developing you can have your files automatically rebuild by keeping
 yarn run watch
 ```
 
-running in the background. If you've already built symlinks, your up-to-date script can be run instantly by entering `skeleton` into the KoLmafia CLI.
+running in the background. If you've already built symlinks, your up-to-date script can be run instantly by entering `knucklefarm` into the KoLmafia CLI.
