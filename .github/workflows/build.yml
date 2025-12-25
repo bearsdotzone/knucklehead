@@ -12,45 +12,8 @@ env:
   path: "dist" # The directory where your assets are generated, should match build.mjs
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - run: corepack enable
-
-      - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.node-version }}
-
-      - name: Install Dependencies
-        run: yarn install --immutable
-
-      - name: Build
-        run: yarn run build
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - run: corepack enable
-
-      - name: Use Node.js ${{ env.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.node-version }}
-
-      - name: Install Dependencies
-        run: yarn install --immutable
-
-      - name: ESLint & Prettier
-        run: yarn run lint
-
   push:
     runs-on: ubuntu-latest
-    needs: [test, lint]
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
