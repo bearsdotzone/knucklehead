@@ -4270,7 +4270,7 @@ var TaskUnlockStore = {
     return (0, import_kolmafia11.getProperty)("_knuckleboneDrops") === "100";
   },
   do: $location(_templateObject214 || (_templateObject214 = _taggedTemplateLiteral5(["The Skeleton Store"]))),
-  combat: new CombatStrategy().autoattack(Macro.attack()),
+  combat: new CombatStrategy().autoattack(Macro.attack().repeat()),
   outfit: {
     familiar: $familiar(_templateObject311 || (_templateObject311 = _taggedTemplateLiteral5(["Skeleton of Crimbo Past"]))),
     famequip: $item(_templateObject411 || (_templateObject411 = _taggedTemplateLiteral5(["small peppermint-flavored sugar walking crook"]))),
