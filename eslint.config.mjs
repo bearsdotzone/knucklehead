@@ -1,7 +1,9 @@
 // @ts-check
 import eslint from "@eslint/js";
-import * as libram from "eslint-plugin-libram";
+import libram, { verifyConstantsSinceRevision } from "eslint-plugin-libram";
 import tseslint from "typescript-eslint";
+
+await verifyConstantsSinceRevision(28818);
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -14,6 +16,15 @@ export default tseslint.config(
   },
   {
     rules: {
+      "libram/verify-constants": [
+        "error",
+        {
+          data: {
+            items: [],
+            locations: [],
+          },
+        },
+      ],
       "block-scoped-var": "error",
       "eol-last": "error",
       eqeqeq: "error",
