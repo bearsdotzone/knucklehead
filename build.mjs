@@ -20,14 +20,14 @@ const watchPlugin = {
 };
 
 const config = {
-  entryPoints: { "knucklefarm": "src/main.ts" },
+  entryPoints: { "knucklehead": "src/main.ts" },
   bundle: true,
   minifySyntax: true,
   platform: "node",
   target: "rhino1.7.14",
   external: ["kolmafia"],
   plugins: [babel(), ...(doWatch ? [watchPlugin] : [])],
-  outdir: "dist/scripts/knucklefarm",
+  outdir: "dist/scripts/knucklehead",
   loader: { ".json": "text" },
   inject: ["./kolmafia-polyfill.js"],
   define: {
