@@ -6,6 +6,8 @@ import {
   eat,
   mallPrice,
   myAdventures,
+  myHp,
+  myMaxhp,
   putShop,
   restoreHp,
   runChoice,
@@ -75,7 +77,7 @@ const TaskStarterFunds: Task = {
     autosell($item`baconstone`, 5);
     autosell($item`hamethyst`, 5);
     autosell($item`porquoise`, 5);
-  }
+  },
 };
 
 // const TaskGetScripts: Task = {
@@ -128,7 +130,7 @@ const TaskFightSkeletons: Task = {
     famequip: $item`small peppermint-flavored sugar walking crook`,
     modifier: "item",
   },
-  post: () => restoreHp(-1),
+  post: () => restoreHp(myMaxhp() * 0.8 - myHp()),
   choices: {
     1060: 5,
   },
