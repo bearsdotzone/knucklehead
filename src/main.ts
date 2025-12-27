@@ -2,15 +2,52 @@ import { CombatStrategy, Engine, step, Task } from "grimoire-kolmafia";
 import {
   availableAmount,
   buy,
-  cliExecute,
-  gitExists,
+  eat,
   mallPrice,
   myAdventures,
   putShop,
+  takeStorage,
   visit,
-  visitUrl
+  visitUrl,
 } from "kolmafia";
-import { $coinmaster, $familiar, $item, $location, get, Macro, set } from "libram";
+import {
+  $class,
+  $coinmaster,
+  $familiar,
+  $item,
+  $location,
+  $path,
+  ascend,
+  get,
+  KolGender,
+  Lifestyle,
+  Macro,
+} from "libram";
+
+const TaskLoop: Task = {
+  name: "Ascending",
+  acquire: [
+    {
+      item: $item`gallon of milk`,
+      num: 3,
+      price: 5000,
+    },
+  ],
+  completed: () => !get("kingLiberated"),
+  do: () => {
+    ascend({
+      path: $path`Grey Goo`,
+      playerClass: $class`Accordion Thief`,
+      lifestyle: Lifestyle.softcore,
+      kolGender: KolGender.female,
+      moon: "packrat",
+      pet: $item`astral mask`,
+    });
+  },
+  post: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1),
+  ready: () => get("kingLiberated") && get(`_knuckleboneDrops`) === 100,
+  limit: { tries: 1 },
+};
 
 const TaskUnlockStore: Task = {
   name: "Unlock Skeleton Store",
@@ -21,35 +58,44 @@ const TaskUnlockStore: Task = {
   limit: { tries: 1 },
 };
 
-const TaskGetScripts: Task = {
-  name: "Get Scripts",
-  completed: () => gitExists("C2Talon-c2t_apron-master"),
-  do: () => {
-    cliExecute("git checkout https://github.com/C2Talon/c2t_apron.git master");
-  },
-  limit: {
-    tries: 1
-  }
-};
+// const TaskGetScripts: Task = {
+//   name: "Get Scripts",
+//   completed: () => gitExists("C2Talon-c2t_apron-master"),
+//   do: () => {
+//     cliExecute("git checkout https://github.com/C2Talon/c2t_apron.git master");
+//   },
+//   limit: {
+//     tries: 1,
+//   },
+// };
+
+// const TaskDiet: Task = {
+//   name: "Diet",
+//   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
+//   do: () => {
+//     cliExecute(`c2t_apron.ash`);
+//   },
+//   acquire: [
+//     {
+//       item: $item`Black and White Apron Meal Kit`,
+//       price: 5000,
+//     },
+//   ],
+//   prepare: () => {
+//     set("autoSatisfyWithMall", true);
+//   },
+//   limit: {
+//     tries: 5,
+//   },
+// };
 
 const TaskDiet: Task = {
   name: "Diet",
   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
   do: () => {
-    cliExecute(`c2t_apron.ash`);
+    takeStorage($item`gallon of milk`, 1);
+    eat($item`gallon of milk`);
   },
-  acquire: [
-    {
-      item: $item`Black and White Apron Meal Kit`,
-      price: 5000,
-    }
-  ],
-  prepare: () => {
-    set("autoSatisfyWithMall", true);
-  },
-  limit: {
-    tries: 5,
-  }
 };
 
 const TaskFightSkeletons: Task = {
@@ -60,11 +106,11 @@ const TaskFightSkeletons: Task = {
   outfit: {
     familiar: $familiar`Skeleton of Crimbo Past`,
     famequip: $item`small peppermint-flavored sugar walking crook`,
-    modifier: 'item'
+    modifier: "item",
   },
   choices: {
-    1060: 5
-  }
+    1060: 5,
+  },
 };
 
 const TaskBuyLoot: Task = {
@@ -89,17 +135,18 @@ const TaskBuyLoot: Task = {
     putShop(specialItemValue, 1, specialItem);
   },
   limit: {
-    completed: true
-  }
+    completed: true,
+  },
 };
 
 export function main(): void {
   const engine = new Engine([
-    TaskGetScripts,
+    TaskLoop,
+    // TaskGetScripts,
     TaskUnlockStore,
     TaskDiet,
     TaskFightSkeletons,
-    TaskBuyLoot
+    TaskBuyLoot,
   ]);
   engine.run();
 }
