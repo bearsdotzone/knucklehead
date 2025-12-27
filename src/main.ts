@@ -57,9 +57,11 @@ const TaskLoop: Task = {
       consumable: $item`none`,
       pet: $item`astral mask`,
     });
-    runChoice(1);
   },
-  post: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1),
+  post: () => {
+    runChoice(1);
+    takeStorage($item`small peppermint-flavored sugar walking crook`, 1);
+  },
   ready: () => get("kingLiberated") && get(`_knuckleboneDrops`) === 100,
   limit: { tries: 1 },
 };
@@ -136,22 +138,22 @@ const QuestRecover: Quest<Task> = {
       completed: () => myHp() / myMaxhp() >= 0.75,
       do: () => {
         useSkill($skill`Cannelloni Cocoon`);
-      }
+      },
     },
     {
       name: "Recover Failed",
       completed: () => myHp() / myMaxhp() >= 0.5,
       do: () => {
         throw "Unable to heal above 50% HP, heal yourself!";
-      }
+      },
     },
     {
       name: "Recover MP",
       completed: () => myMp() >= Math.min(250, myMaxmp()),
-      do: () => restoreMp(300)
-    }
-  ]
-}
+      do: () => restoreMp(300),
+    },
+  ],
+};
 
 const TaskFightSkeletons: Task = {
   name: "Fight Skeletons",
