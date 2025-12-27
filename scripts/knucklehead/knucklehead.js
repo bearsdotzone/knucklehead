@@ -4642,7 +4642,7 @@ function step(questName) {
 
 // src/main.ts
 var import_kolmafia12 = require("kolmafia");
-var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216;
+var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216, _templateObject224, _templateObject234;
 function _toConsumableArray9(r) {
   return _arrayWithoutHoles9(r) || _iterableToArray9(r) || _unsupportedIterableToArray10(r) || _nonIterableSpread9();
 }
@@ -4775,17 +4775,21 @@ var TaskLoop = {
 }, TaskBuyLoot = {
   name: "Buy SOCP Shop Item",
   ready: function() {
-    var _get;
+    var _ref, _get;
     (0, import_kolmafia12.visit)($coinmaster(_templateObject174 || (_templateObject174 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
-    var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_ref = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : import_kolmafia12.Item.all().filter(function(i) {
+      return (0, import_kolmafia12.sellsItem)($coinmaster(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), i) && i.id < 12052;
+    }).at(0)) !== null && _ref !== void 0 ? _ref : $item(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
     return availableKnucklebones > bonePrice && specialItemValue > 5e3 * bonePrice;
   },
   completed: function() {
     return !1;
   },
   do: function() {
-    var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["none"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
-    (0, import_kolmafia12.buy)($coinmaster(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), 1, specialItem), (0, import_kolmafia12.putShop)(specialItemValue, 1, specialItem);
+    var _ref2, _get2, specialItem = (_ref2 = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : import_kolmafia12.Item.all().filter(function(i) {
+      return (0, import_kolmafia12.sellsItem)($coinmaster(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), i) && i.id < 12052;
+    }).at(0)) !== null && _ref2 !== void 0 ? _ref2 : $item(_templateObject224 || (_templateObject224 = _taggedTemplateLiteral6(["none"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    (0, import_kolmafia12.buy)($coinmaster(_templateObject234 || (_templateObject234 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), 1, specialItem), (0, import_kolmafia12.putShop)(specialItemValue, 1, specialItem);
   },
   limit: {
     completed: !0
