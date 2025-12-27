@@ -4716,7 +4716,7 @@ var TaskLoop = {
     modifier: "item"
   },
   post: function() {
-    return (0, import_kolmafia12.restoreHp)(-1);
+    return (0, import_kolmafia12.restoreHp)((0, import_kolmafia12.myMaxhp)() * 0.8 - (0, import_kolmafia12.myHp)());
   },
   choices: {
     1060: 5
