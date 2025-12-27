@@ -1,13 +1,18 @@
 import { CombatStrategy, Engine, step, Task } from "grimoire-kolmafia";
 import {
+  autosell,
   availableAmount,
   buy,
   eat,
+  itemAmount,
   mallPrice,
   myAdventures,
   putShop,
+  restoreHp,
   runChoice,
+  sell,
   takeStorage,
+  use,
   visit,
   visitUrl,
 } from "kolmafia";
@@ -63,6 +68,19 @@ const TaskUnlockStore: Task = {
   limit: { tries: 1 },
 };
 
+const TaskStarterFunds: Task = {
+  name: "Sell Oriole Gems",
+  completed: () => step("questM05Toot") === 999,
+  do: () => {
+    visitUrl("tutorial.php?action=toot", true);
+    use($item`letter from King Ralph XI`);
+    use($item`pork elf goodies sack`);
+    autosell($item`baconstone`, 5);
+    autosell($item`hamethyst`, 5);
+    autosell($item`porquoise`, 5);
+  }
+};
+
 // const TaskGetScripts: Task = {
 //   name: "Get Scripts",
 //   completed: () => gitExists("C2Talon-c2t_apron-master"),
@@ -113,6 +131,7 @@ const TaskFightSkeletons: Task = {
     famequip: $item`small peppermint-flavored sugar walking crook`,
     modifier: "item",
   },
+  post: () => restoreHp(-1),
   choices: {
     1060: 5,
   },
@@ -149,6 +168,7 @@ export function main(): void {
     TaskLoop,
     // TaskGetScripts,
     TaskUnlockStore,
+    TaskStarterFunds,
     TaskDiet,
     TaskFightSkeletons,
     TaskBuyLoot,
