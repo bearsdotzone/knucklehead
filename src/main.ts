@@ -4,13 +4,11 @@ import {
   availableAmount,
   buy,
   eat,
-  itemAmount,
   mallPrice,
   myAdventures,
   putShop,
   restoreHp,
   runChoice,
-  sell,
   takeStorage,
   use,
   visit,
@@ -28,7 +26,6 @@ import {
   KolGender,
   Lifestyle,
   Macro,
-  noneToNull,
 } from "libram";
 
 const TaskLoop: Task = {
