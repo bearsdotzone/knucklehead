@@ -169,19 +169,17 @@ const TaskFightSkeletons: Task = {
 const TaskBuyLoot: Task = {
   name: "Buy SOCP Shop Item",
   ready: () => {
+    visit($coinmaster`Skeleton of Crimbo Past`);
     const bonePrice = get("_crimboPastDailySpecialPrice");
-    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`big rock`;
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
     const availableKnucklebones = availableAmount($item`knucklebone`);
     const specialItemValue = mallPrice(specialItem);
 
     return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice;
   },
   completed: () => false,
-  prepare: () => {
-    visit($coinmaster`Skeleton of Crimbo Past`);
-  },
   do: () => {
-    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`big rock`;
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
     const specialItemValue = mallPrice(specialItem);
 
     buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
