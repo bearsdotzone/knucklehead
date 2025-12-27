@@ -170,29 +170,31 @@ const TaskFightSkeletons: Task = {
   },
 };
 
-// const TaskBuyLoot: Task = {
-//   name: "Buy SOCP Shop Item",
-//   ready: () => {
-//     visit($coinmaster`Skeleton of Crimbo Past`);
-//     const bonePrice = get("_crimboPastDailySpecialPrice");
-//     const specialItem = get("_crimboPastDailySpecialItem") ?? Item.all().filter(i => sellsItem($coinmaster`Skeleton of Crimbo Past`, i) && i.id < 12052).at(0) ?? $item`none`;
-//     const availableKnucklebones = availableAmount($item`knucklebone`);
-//     const specialItemValue = mallPrice(specialItem);
+const TaskBuyLoot: Task = {
+  name: "Buy SOCP Shop Item",
+  ready: () => {
+    const bonePrice = get("_crimboPastDailySpecialPrice");
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
+    const availableKnucklebones = availableAmount($item`knucklebone`);
+    const specialItemValue = mallPrice(specialItem);
 
-//     return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice;
-//   },
-//   completed: () => false,
-//   do: () => {
-//     const specialItem = get("_crimboPastDailySpecialItem") ?? Item.all().filter(i => sellsItem($coinmaster`Skeleton of Crimbo Past`, i) && i.id < 12052).at(0) ?? $item`none`;
-//     const specialItemValue = mallPrice(specialItem);
+    return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice;
+  },
+  completed: () => false,
+  do: () => {
+    const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
+    const specialItemValue = mallPrice(specialItem);
 
-//     buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
-//     putShop(specialItemValue, 1, specialItem);
-//   },
-//   limit: {
-//     completed: true,
-//   },
-// };
+    buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
+    putShop(specialItemValue, 1, specialItem);
+  },
+  limit: {
+    completed: true,
+  },
+  prepare: () => {
+    visit($coinmaster`Skeleton of Crimbo Past`);
+  }
+};
 
 export function main(): void {
   const engine = new Engine([
@@ -203,7 +205,7 @@ export function main(): void {
     TaskDiet,
     ...QuestRecover.tasks,
     TaskFightSkeletons,
-    // TaskBuyLoot,
+    TaskBuyLoot,
   ]);
   engine.run();
 }
