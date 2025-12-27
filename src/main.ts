@@ -33,6 +33,9 @@ const TaskLoop: Task = {
       price: 5000,
     },
   ],
+  choices: {
+    1419: 1,
+  },
   completed: () => !get("kingLiberated"),
   do: () => {
     ascend({
