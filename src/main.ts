@@ -1,4 +1,4 @@
-import { CombatStrategy, Engine, step, Task } from "grimoire-kolmafia";
+import { CombatStrategy, Engine, Quest, step, Task } from "grimoire-kolmafia";
 import {
   autosell,
   availableAmount,
@@ -8,11 +8,14 @@ import {
   myAdventures,
   myHp,
   myMaxhp,
+  myMaxmp,
+  myMp,
   putShop,
-  restoreHp,
+  restoreMp,
   runChoice,
   takeStorage,
   use,
+  useSkill,
   visit,
   visitUrl,
 } from "kolmafia";
@@ -23,8 +26,10 @@ import {
   $item,
   $location,
   $path,
+  $skill,
   ascend,
   get,
+  have,
   KolGender,
   Lifestyle,
   Macro,
@@ -120,10 +125,30 @@ const TaskDiet: Task = {
   },
 };
 
-const TaskRestoreHealth: Task = {
-  name: "Restoring Health",
-  completed: () => myHp() >= myMaxhp() * 0.8,
-  do: () => restoreHp(myMaxhp() * 0.8 - myHp())
+const QuestRecover: Quest<Task> = {
+  name: "Recovering HP/MP",
+  tasks: [
+    {
+      name: "Recover",
+      ready: () => have($skill`Cannelloni Cocoon`),
+      completed: () => myHp() / myMaxhp() >= 0.75,
+      do: () => {
+        useSkill($skill`Cannelloni Cocoon`);
+      }
+    },
+    {
+      name: "Recover Failed",
+      completed: () => myHp() / myMaxhp() >= 0.5,
+      do: () => {
+        throw "Unable to heal above 50% HP, heal yourself!";
+      }
+    },
+    {
+      name: "Recover MP",
+      completed: () => myMp() >= Math.min(250, myMaxmp()),
+      do: () => restoreMp(300)
+    }
+  ]
 }
 
 const TaskFightSkeletons: Task = {
@@ -174,7 +199,7 @@ export function main(): void {
     TaskUnlockStore,
     TaskStarterFunds,
     TaskDiet,
-    TaskRestoreHealth,
+    ...QuestRecover.tasks,
     TaskFightSkeletons,
     TaskBuyLoot,
   ]);
