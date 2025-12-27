@@ -4775,17 +4775,16 @@ var TaskLoop = {
 }, TaskBuyLoot = {
   name: "Buy SOCP Shop Item",
   ready: function() {
-    var _get, bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject174 || (_templateObject174 = _taggedTemplateLiteral6(["big rock"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    var _get;
+    (0, import_kolmafia12.visit)($coinmaster(_templateObject174 || (_templateObject174 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
+    var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
     return availableKnucklebones > bonePrice && specialItemValue > 5e3 * bonePrice;
   },
   completed: function() {
     return !1;
   },
-  prepare: function() {
-    (0, import_kolmafia12.visit)($coinmaster(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
-  },
   do: function() {
-    var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["big rock"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["none"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
     (0, import_kolmafia12.buy)($coinmaster(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), 1, specialItem), (0, import_kolmafia12.putShop)(specialItemValue, 1, specialItem);
   },
   limit: {
