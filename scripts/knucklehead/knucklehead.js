@@ -4700,7 +4700,7 @@ var TaskLoop = {
     return get("_knuckleboneDrops") === 100;
   },
   do: $location(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral6(["The Skeleton Store"]))),
-  combat: new CombatStrategy().autoattack(Macro.trySkill("pickpocket").attack().repeat()),
+  combat: new CombatStrategy().autoattack(Macro.step("pickpocket").attack().repeat()),
   outfit: {
     familiar: $familiar(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))),
     famequip: $item(_templateObject03 || (_templateObject03 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))),
