@@ -34,9 +34,6 @@ const TaskLoop: Task = {
       price: 5000,
     },
   ],
-  choices: {
-    1419: 1,
-  },
   completed: () => !get("kingLiberated"),
   do: () => {
     ascend({
@@ -47,6 +44,7 @@ const TaskLoop: Task = {
       moon: "packrat",
       pet: $item`astral mask`,
     });
+    runChoice(1);
   },
   post: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1),
   ready: () => get("kingLiberated") && get(`_knuckleboneDrops`) === 100,
