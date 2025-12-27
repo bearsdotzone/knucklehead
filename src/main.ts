@@ -120,6 +120,12 @@ const TaskDiet: Task = {
   },
 };
 
+const TaskRestoreHealth: Task = {
+  name: "Restoring Health",
+  completed: () => myHp() >= myMaxhp() * 0.8,
+  do: () => restoreHp(myMaxhp() * 0.8 - myHp())
+}
+
 const TaskFightSkeletons: Task = {
   name: "Fight Skeletons",
   completed: () => get("_knuckleboneDrops") === 100,
@@ -130,7 +136,6 @@ const TaskFightSkeletons: Task = {
     famequip: $item`small peppermint-flavored sugar walking crook`,
     modifier: "item",
   },
-  post: () => restoreHp(myMaxhp() * 0.8 - myHp()),
   choices: {
     1060: 5,
   },
@@ -169,6 +174,7 @@ export function main(): void {
     TaskUnlockStore,
     TaskStarterFunds,
     TaskDiet,
+    TaskRestoreHealth,
     TaskFightSkeletons,
     TaskBuyLoot,
   ]);
