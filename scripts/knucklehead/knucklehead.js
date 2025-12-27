@@ -4653,6 +4653,9 @@ var TaskLoop = {
     num: 3,
     price: 5e3
   }],
+  choices: {
+    1419: 1
+  },
   completed: function() {
     return !get("kingLiberated");
   },
