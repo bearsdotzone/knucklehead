@@ -44,7 +44,7 @@ const TaskLoop: Task = {
       price: 5000,
     },
   ],
-  completed: () => !get("kingLiberated"),
+  completed: () => !visitUrl("place.php?whichplace=greygoo").includes("ascend.php"),
   do: () => {
     ascend({
       path: $path`Grey Goo`,
@@ -60,7 +60,7 @@ const TaskLoop: Task = {
     runChoice(1);
     takeStorage($item`small peppermint-flavored sugar walking crook`, 1);
   },
-  ready: () => get("kingLiberated") && get(`_knuckleboneDrops`) === 100,
+  ready: () => visitUrl("place.php?whichplace=greygoo").includes("ascend.php") && get(`_knuckleboneDrops`) === 100,
   limit: { tries: 1 },
 };
 
