@@ -4678,7 +4678,7 @@ var TaskLoop = {
     price: 5e3
   }],
   completed: function() {
-    return !get("kingLiberated");
+    return !(0, import_kolmafia12.visitUrl)("place.php?whichplace=greygoo").includes("ascend.php");
   },
   do: function() {
     ascend({
@@ -4695,7 +4695,7 @@ var TaskLoop = {
     (0, import_kolmafia12.runChoice)(1), (0, import_kolmafia12.takeStorage)($item(_templateObject610 || (_templateObject610 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))), 1);
   },
   ready: function() {
-    return get("kingLiberated") && get("_knuckleboneDrops") === 100;
+    return (0, import_kolmafia12.visitUrl)("place.php?whichplace=greygoo").includes("ascend.php") && get("_knuckleboneDrops") === 100;
   },
   limit: {
     tries: 1
