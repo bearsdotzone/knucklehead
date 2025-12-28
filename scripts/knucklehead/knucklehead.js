@@ -4642,7 +4642,7 @@ function step(questName) {
 
 // src/main.ts
 var import_kolmafia12 = require("kolmafia");
-var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216, _templateObject224, _templateObject234, _templateObject244;
+var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216, _templateObject224, _templateObject234, _templateObject244, _templateObject254;
 function _toConsumableArray9(r) {
   return _arrayWithoutHoles9(r) || _iterableToArray9(r) || _unsupportedIterableToArray10(r) || _nonIterableSpread9();
 }
@@ -4687,17 +4687,25 @@ var TaskLoop = {
     });
   },
   post: function() {
-    (0, import_kolmafia12.runChoice)(1), (0, import_kolmafia12.takeStorage)($item(_templateObject510 || (_templateObject510 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))), 1);
+    (0, import_kolmafia12.runChoice)(1);
   },
   prepare: function() {
-    var gallons = (0, import_kolmafia12.storageAmount)($item(_templateObject610 || (_templateObject610 = _taggedTemplateLiteral6(["gallon of milk"]))));
-    (0, import_kolmafia12.buyUsingStorage)($item(_templateObject710 || (_templateObject710 = _taggedTemplateLiteral6(["gallon of milk"]))), 3 - gallons, 5e3);
+    var gallons = (0, import_kolmafia12.storageAmount)($item(_templateObject510 || (_templateObject510 = _taggedTemplateLiteral6(["gallon of milk"]))));
+    (0, import_kolmafia12.buyUsingStorage)($item(_templateObject610 || (_templateObject610 = _taggedTemplateLiteral6(["gallon of milk"]))), 3 - gallons, 5e3);
   },
   ready: function() {
     return (0, import_kolmafia12.visitUrl)("place.php?whichplace=greygoo").includes("ascend.php") && get("_knuckleboneDrops") === 100;
   },
   limit: {
     tries: 1
+  }
+}, TaskRetrieveGear = {
+  name: "Retrieve Gear from Storage",
+  completed: function() {
+    return (0, import_kolmafia12.availableAmount)($item(_templateObject710 || (_templateObject710 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"])))) > 0;
+  },
+  do: function() {
+    return (0, import_kolmafia12.takeStorage)($item(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))), 1);
   }
 }, TaskUnlockStore = {
   name: "Unlock Skeleton Store",
@@ -4708,7 +4716,7 @@ var TaskLoop = {
     (0, import_kolmafia12.visitUrl)("shop.php?whichshop=meatsmith&action=talk", !0), (0, import_kolmafia12.runChoice)(1);
   },
   limit: {
-    tries: 2
+    tries: 1
   }
 }, TaskStarterFunds = {
   name: "Sell Oriole Gems",
@@ -4716,7 +4724,7 @@ var TaskLoop = {
     return step("questM05Toot") === 999;
   },
   do: function() {
-    (0, import_kolmafia12.visitUrl)("tutorial.php?action=toot", !0), (0, import_kolmafia12.use)($item(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral6(["letter from King Ralph XI"])))), (0, import_kolmafia12.use)($item(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral6(["pork elf goodies sack"])))), (0, import_kolmafia12.autosell)($item(_templateObject03 || (_templateObject03 = _taggedTemplateLiteral6(["baconstone"]))), 5), (0, import_kolmafia12.autosell)($item(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral6(["hamethyst"]))), 5), (0, import_kolmafia12.autosell)($item(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral6(["porquoise"]))), 5);
+    (0, import_kolmafia12.visitUrl)("tutorial.php?action=toot", !0), (0, import_kolmafia12.use)($item(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral6(["letter from King Ralph XI"])))), (0, import_kolmafia12.use)($item(_templateObject03 || (_templateObject03 = _taggedTemplateLiteral6(["pork elf goodies sack"])))), (0, import_kolmafia12.autosell)($item(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral6(["baconstone"]))), 5), (0, import_kolmafia12.autosell)($item(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral6(["hamethyst"]))), 5), (0, import_kolmafia12.autosell)($item(_templateObject114 || (_templateObject114 = _taggedTemplateLiteral6(["porquoise"]))), 5);
   }
 }, TaskDiet = {
   name: "Diet",
@@ -4724,28 +4732,28 @@ var TaskLoop = {
     return (0, import_kolmafia12.myAdventures)() >= 100 - get("_knuckleboneDrops");
   },
   do: function() {
-    (0, import_kolmafia12.takeStorage)($item(_templateObject114 || (_templateObject114 = _taggedTemplateLiteral6(["gallon of milk"]))), 1), (0, import_kolmafia12.eat)($item(_templateObject124 || (_templateObject124 = _taggedTemplateLiteral6(["gallon of milk"]))));
+    (0, import_kolmafia12.takeStorage)($item(_templateObject124 || (_templateObject124 = _taggedTemplateLiteral6(["gallon of milk"]))), 1), (0, import_kolmafia12.eat)($item(_templateObject134 || (_templateObject134 = _taggedTemplateLiteral6(["gallon of milk"]))));
   }
 }, QuestRecover = {
   name: "Recovering HP/MP",
   tasks: [{
     name: "Funds",
     completed: function() {
-      return (0, import_kolmafia12.availableAmount)($item(_templateObject134 || (_templateObject134 = _taggedTemplateLiteral6(["half of a gold tooth"])))) < 10;
+      return (0, import_kolmafia12.availableAmount)($item(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral6(["half of a gold tooth"])))) < 10;
     },
     do: function() {
-      return (0, import_kolmafia12.autosell)($item(_templateObject144 || (_templateObject144 = _taggedTemplateLiteral6(["half of a gold tooth"]))), 10);
+      return (0, import_kolmafia12.autosell)($item(_templateObject154 || (_templateObject154 = _taggedTemplateLiteral6(["half of a gold tooth"]))), 10);
     }
   }, {
     name: "Recover",
     ready: function() {
-      return have($skill(_templateObject154 || (_templateObject154 = _taggedTemplateLiteral6(["Cannelloni Cocoon"]))));
+      return have($skill(_templateObject164 || (_templateObject164 = _taggedTemplateLiteral6(["Cannelloni Cocoon"]))));
     },
     completed: function() {
       return (0, import_kolmafia12.myHp)() / (0, import_kolmafia12.myMaxhp)() >= 0.75;
     },
     do: function() {
-      (0, import_kolmafia12.useSkill)($skill(_templateObject164 || (_templateObject164 = _taggedTemplateLiteral6(["Cannelloni Cocoon"]))));
+      (0, import_kolmafia12.useSkill)($skill(_templateObject174 || (_templateObject174 = _taggedTemplateLiteral6(["Cannelloni Cocoon"]))));
     }
   }, {
     name: "Recover Failed",
@@ -4769,11 +4777,11 @@ var TaskLoop = {
   completed: function() {
     return get("_knuckleboneDrops") === 100;
   },
-  do: $location(_templateObject174 || (_templateObject174 = _taggedTemplateLiteral6(["The Skeleton Store"]))),
+  do: $location(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["The Skeleton Store"]))),
   combat: new CombatStrategy().autoattack(Macro.step("pickpocket").attack().repeat()),
   outfit: {
-    familiar: $familiar(_templateObject184 || (_templateObject184 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))),
-    famequip: $item(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))),
+    familiar: $familiar(_templateObject194 || (_templateObject194 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))),
+    famequip: $item(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))),
     modifier: "item"
   },
   choices: {
@@ -4783,16 +4791,16 @@ var TaskLoop = {
   name: "Buy SOCP Shop Item",
   ready: function() {
     var _get;
-    (0, import_kolmafia12.visit)($coinmaster(_templateObject204 || (_templateObject204 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
-    var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject224 || (_templateObject224 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    (0, import_kolmafia12.visit)($coinmaster(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
+    var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject224 || (_templateObject224 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject234 || (_templateObject234 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
     return availableKnucklebones > bonePrice && specialItemValue > 5e3 * bonePrice;
   },
   completed: function() {
     return !1;
   },
   do: function() {
-    var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject234 || (_templateObject234 = _taggedTemplateLiteral6(["none"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
-    (0, import_kolmafia12.buy)($coinmaster(_templateObject244 || (_templateObject244 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), 1, specialItem), (0, import_kolmafia12.putShop)(specialItemValue, 1, specialItem);
+    var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject244 || (_templateObject244 = _taggedTemplateLiteral6(["none"]))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
+    (0, import_kolmafia12.buy)($coinmaster(_templateObject254 || (_templateObject254 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))), 1, specialItem), (0, import_kolmafia12.putShop)(specialItemValue, 1, specialItem);
   },
   limit: {
     completed: !0
@@ -4802,6 +4810,7 @@ function main() {
   var engine = new Engine([
     TaskLoop,
     // TaskGetScripts,
+    TaskRetrieveGear,
     TaskUnlockStore,
     TaskStarterFunds,
     TaskDiet
