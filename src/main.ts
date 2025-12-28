@@ -53,7 +53,6 @@ const TaskLoop: Task = {
   },
   post: () => {
     runChoice(1);
-    takeStorage($item`small peppermint-flavored sugar walking crook`, 1);
   },
   prepare: () => {
     const gallons = storageAmount($item`gallon of milk`);
@@ -61,6 +60,12 @@ const TaskLoop: Task = {
   },
   ready: () => visitUrl("place.php?whichplace=greygoo").includes("ascend.php") && get(`_knuckleboneDrops`) === 100,
   limit: { tries: 1 },
+};
+
+const TaskRetrieveGear: Task = {
+  name: "Retrieve Gear from Storage",
+  completed: () => availableAmount($item`small peppermint-flavored sugar walking crook`) > 0,
+  do: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1)
 };
 
 const TaskUnlockStore: Task = {
@@ -201,6 +206,7 @@ export function main(): void {
     TaskLoop,
     // TaskGetScripts,
     TaskUnlockStore,
+    TaskRetrieveGear,
     TaskStarterFunds,
     TaskDiet,
     ...QuestRecover.tasks,
