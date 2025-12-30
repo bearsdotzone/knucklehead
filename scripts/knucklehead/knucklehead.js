@@ -4776,7 +4776,7 @@ var TaskLoop = {
       items = items.concat(_entry.item.name, " "), price += _entry.price, stomachCapacity += _entry.fullness, liverCapacity += _entry.inebriety;
     }
     price > 1e4 && (0, import_kolmafia12.abort)("The price of this diet is too high!"), stomachCapacity !== 15 && (0, import_kolmafia12.abort)("Not filling enough stomach!"), liverCapacity !== 14 && (0, import_kolmafia12.abort)("Not filling enough liver!"), toConsume.forEach(function(i) {
-      i.fullness ? ((0, import_kolmafia12.buyUsingStorage)(i.item), (0, import_kolmafia12.takeStorage)(i.item, 1), (0, import_kolmafia12.eat)(i.item)) : ((0, import_kolmafia12.buyUsingStorage)(i.item), (0, import_kolmafia12.takeStorage)(i.item, 1), (0, import_kolmafia12.drink)(i.item));
+      i.fullness ? ((0, import_kolmafia12.buyUsingStorage)(i.item), (0, import_kolmafia12.takeStorage)(i.item, 1), (0, import_kolmafia12.eat)(i.item)) : ((0, import_kolmafia12.buyUsingStorage)(i.item), (0, import_kolmafia12.takeStorage)(i.item, 1), (0, import_kolmafia12.drinksilent)(i.item));
     });
   },
   limit: {
