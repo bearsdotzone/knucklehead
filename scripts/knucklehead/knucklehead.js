@@ -4798,7 +4798,7 @@ var TaskLoop = {
     var _get;
     (0, import_kolmafia12.visit)($coinmaster(_templateObject216 || (_templateObject216 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
     var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject224 || (_templateObject224 = _taggedTemplateLiteral6(["none"]))), availableKnucklebones = (0, import_kolmafia12.availableAmount)($item(_templateObject234 || (_templateObject234 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = (0, import_kolmafia12.mallPrice)(specialItem);
-    return availableKnucklebones > bonePrice && specialItemValue > 5e3 * bonePrice;
+    return availableKnucklebones > bonePrice && specialItemValue > 5e3 * bonePrice && specialItem.tradeable;
   },
   completed: function() {
     return !1;
