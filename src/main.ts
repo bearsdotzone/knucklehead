@@ -286,9 +286,9 @@ const TaskBuyLoot: Task = {
     const availableKnucklebones = availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
     const specialItemValue = mallPrice(specialItem);
 
-    return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice && specialItem.tradeable && !get('_crimboPastDailySpecial');
+    return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice && specialItem.tradeable;
   },
-  completed: () => false,
+  completed: () => get('_crimboPastDailySpecial'),
   do: () => {
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
     const specialItemValue = mallPrice(specialItem);
@@ -299,7 +299,7 @@ const TaskBuyLoot: Task = {
     putShop(specialItemValue, 1, specialItem);
   },
   limit: {
-    completed: true,
+    tries: 1,
   }
 };
 
