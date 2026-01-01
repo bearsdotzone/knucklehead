@@ -18,6 +18,7 @@ import {
   putShop,
   restoreMp,
   runChoice,
+  storageAmount,
   takeStorage,
   use,
   useSkill,
@@ -270,7 +271,7 @@ const TaskBuyLoot: Task = {
     visit($coinmaster`Skeleton of Crimbo Past`);
     const bonePrice = get("_crimboPastDailySpecialPrice");
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
-    const availableKnucklebones = availableAmount($item`knucklebone`);
+    const availableKnucklebones = availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
     const specialItemValue = mallPrice(specialItem);
 
     return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice && specialItem.tradeable;
