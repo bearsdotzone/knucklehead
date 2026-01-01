@@ -245,16 +245,19 @@ const QuestRecover: Quest<Task> = {
       },
     },
     {
+      name: "Recover MP",
+      completed: () => myMp() >= Math.min(250, myMaxmp()),
+      do: () => restoreMp(300),
+      limit: {
+        tries: 20,
+      }
+    },
+    {
       name: "Recover Failed",
       completed: () => myHp() / myMaxhp() >= 0.5,
       do: () => {
         throw "Unable to heal above 50% HP, heal yourself!";
       },
-    },
-    {
-      name: "Recover MP",
-      completed: () => myMp() >= Math.min(250, myMaxmp()),
-      do: () => restoreMp(300),
     },
   ],
 };
