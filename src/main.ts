@@ -294,7 +294,7 @@ const TaskBuyLoot: Task = {
     const specialItemValue = mallPrice(specialItem);
 
     // buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
-    visitUrl("main.php?talktosocp=1");
+    visitUrl("main.php?talktosocp=1", false, true);
     visitUrl("choice.php?name=choiceform4", true);
     putShop(specialItemValue, 1, specialItem);
   },
