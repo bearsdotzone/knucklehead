@@ -3,11 +3,9 @@ import {
   abort,
   autosell,
   availableAmount,
-  buy,
   buyUsingStorage,
-  drink,
   drinksilent,
-  eat,
+  eatsilent,
   Item,
   mallPrice,
   mpCost,
@@ -38,6 +36,8 @@ import {
   ascend,
   get,
   getAverageAdventures,
+  getRemainingLiver,
+  getRemainingStomach,
   have,
   KolGender,
   Lifestyle,
@@ -46,9 +46,6 @@ import {
 
 const TaskLoop: Task = {
   name: "Ascending",
-  choices: {
-    1419: 1
-  },
   completed: () => !visitUrl("place.php?whichplace=greygoo").includes("ascend.php"),
   do: () => {
     ascend({
@@ -67,18 +64,16 @@ const TaskLoop: Task = {
     }
     runChoice(1);
   },
-  // prepare: () => {
-  //   const gallons = storageAmount($item`gallon of milk`);
-  //   buyUsingStorage($item`gallon of milk`, 3 - gallons, 5000);
-  // },
-  ready: () => visitUrl("place.php?whichplace=greygoo").includes("ascend.php") && get(`_knuckleboneDrops`) === 100,
+  ready: () =>
+    visitUrl("place.php?whichplace=greygoo").includes("ascend.php") &&
+    get(`_knuckleboneDrops`) === 100,
   limit: { tries: 1 },
 };
 
 const TaskRetrieveGear: Task = {
   name: "Retrieve Gear from Storage",
   completed: () => availableAmount($item`small peppermint-flavored sugar walking crook`) > 0,
-  do: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1)
+  do: () => takeStorage($item`small peppermint-flavored sugar walking crook`, 1),
 };
 
 const TaskUnlockStore: Task = {
@@ -104,120 +99,61 @@ const TaskStarterFunds: Task = {
   },
 };
 
-// const TaskGetScripts: Task = {
-//   name: "Get Scripts",
-//   completed: () => gitExists("C2Talon-c2t_apron-master"),
-//   do: () => {
-//     cliExecute("git checkout https://github.com/C2Talon/c2t_apron.git master");
-//   },
-//   limit: {
-//     tries: 1,
-//   },
-// };
-
-// const TaskDiet: Task = {
-//   name: "Diet",
-//   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
-//   do: () => {
-//     cliExecute(`c2t_apron.ash`);
-//   },
-//   acquire: [
-//     {
-//       item: $item`Black and White Apron Meal Kit`,
-//       price: 5000,
-//     },
-//   ],
-//   prepare: () => {
-//     set("autoSatisfyWithMall", true);
-//   },
-//   limit: {
-//     tries: 5,
-//   },
-// };
-
-// const TaskDiet: Task = {
-//   name: "Diet",
-//   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
-//   do: () => {
-//     takeStorage($item`gallon of milk`, 1);
-//     eat($item`gallon of milk`);
-//   },
-// };
+type DietEntry = {
+  item: Item;
+  adventures: number;
+  price: number;
+  fullness: number;
+  inebriety: number;
+};
+const dietOptions: DietEntry[] = [];
 
 const TaskDiet: Task = {
   name: "Diet",
   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
   do: () => {
-    type DietEntry = {
-      item: Item,
-      adventures: number,
-      price: number,
-      fullness: number,
-      inebriety: number,
-    };
+    const toConsume = dietOptions.find(
+      (x) =>
+        (x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
+        (x.inebriety !== 0 && x.inebriety <= getRemainingLiver()),
+    );
 
-    const dietOptions: DietEntry[] = [];
-    Item.all()
-      .filter(i => (i.fullness ^ i.inebriety) && i.tradeable)
-      .filter(i => getAverageAdventures(i) >= 60 / 25)
-      .forEach(i => {
-        dietOptions.push({ item: i, adventures: getAverageAdventures(i), price: mallPrice(i), fullness: i.fullness, inebriety: i.inebriety });
-      });
-    dietOptions.sort((a, b) => b.adventures / b.price - a.adventures / a.price);
-
-    let stomachCapacity = 15;
-    let liverCapacity = 14;
-
-    const toConsume: DietEntry[] = [];
-
-    for (const entry of dietOptions) {
-      if (entry.fullness !== 0 && entry.fullness <= stomachCapacity) {
-        toConsume.push(entry);
-        stomachCapacity -= entry.fullness;
-      }
-      if (entry.inebriety !== 0 && entry.inebriety <= liverCapacity) {
-        toConsume.push(entry);
-        liverCapacity -= entry.inebriety;
-      }
-      if (stomachCapacity === 0 && liverCapacity === 0) {
-        break;
-      }
+    if (toConsume === undefined || toConsume.price >= 5000) {
+      abort("Couldn't find a suitable consumable.");
     }
 
-    let price = 0;
-    let items = "";
-    for (const entry of toConsume) {
-      items = items.concat(entry.item.name, " ");
-      price += entry.price;
-      stomachCapacity += entry.fullness;
-      liverCapacity += entry.inebriety;
+    if (toConsume.fullness) {
+      buyUsingStorage(toConsume.item);
+      takeStorage(toConsume.item, 1);
+      eatsilent(toConsume.item);
+    } else if (toConsume.inebriety) {
+      buyUsingStorage(toConsume.item);
+      takeStorage(toConsume.item, 1);
+      drinksilent(toConsume.item);
+    } else {
+      abort("Didn't consume anything!");
     }
-
-    if (price > 10000) {
-      abort("The price of this diet is too high!");
+  },
+  prepare: () => {
+    if (dietOptions.length === 0) {
+      Item.all()
+        .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
+        .filter((i) => getAverageAdventures(i) >= 60 / 25)
+        .forEach((i) => {
+          dietOptions.push({
+            item: i,
+            adventures: getAverageAdventures(i),
+            price: mallPrice(i),
+            fullness: i.fullness,
+            inebriety: i.inebriety,
+          });
+        });
+      dietOptions.sort((a, b) => b.adventures / b.price - a.adventures / a.price);
     }
-    if (stomachCapacity !== 15) {
-      abort("Not filling enough stomach!");
-    }
-    if (liverCapacity !== 14) {
-      abort("Not filling enough liver!");
-    }
-
-    toConsume.forEach((i) => {
-      if (i.fullness) {
-        buyUsingStorage(i.item);
-        takeStorage(i.item, 1);
-        eat(i.item);
-      } else {
-        buyUsingStorage(i.item);
-        takeStorage(i.item, 1);
-        drinksilent(i.item);
-      }
-    });
   },
   limit: {
     tries: 1,
-  }
+  },
 };
 
 const QuestRecover: Quest<Task> = {
@@ -226,7 +162,7 @@ const QuestRecover: Quest<Task> = {
     {
       name: "Funds",
       completed: () => availableAmount($item`half of a gold tooth`) < 10,
-      do: () => autosell($item`half of a gold tooth`, 10)
+      do: () => autosell($item`half of a gold tooth`, 10),
     },
     {
       name: "Recover",
@@ -238,7 +174,8 @@ const QuestRecover: Quest<Task> = {
     },
     {
       name: "Recover Tongue",
-      ready: () => have($skill`Tongue of the Walrus`) && myMp() >= mpCost($skill`Tongue of the Walrus`),
+      ready: () =>
+        have($skill`Tongue of the Walrus`) && myMp() >= mpCost($skill`Tongue of the Walrus`),
       completed: () => myHp() / myMaxhp() >= 0.75,
       do: () => {
         useSkill($skill`Tongue of the Walrus`);
@@ -250,7 +187,7 @@ const QuestRecover: Quest<Task> = {
       do: () => restoreMp(300),
       limit: {
         tries: 20,
-      }
+      },
     },
     {
       name: "Recover Failed",
@@ -283,12 +220,17 @@ const TaskBuyLoot: Task = {
     visit($coinmaster`Skeleton of Crimbo Past`);
     const bonePrice = get("_crimboPastDailySpecialPrice");
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
-    const availableKnucklebones = availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
+    const availableKnucklebones =
+      availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
     const specialItemValue = mallPrice(specialItem);
 
-    return availableKnucklebones > bonePrice && specialItemValue > 5000 * bonePrice && specialItem.tradeable;
+    return (
+      availableKnucklebones >= bonePrice &&
+      specialItemValue >= 5000 * bonePrice &&
+      specialItem.tradeable
+    );
   },
-  completed: () => get('_crimboPastDailySpecial'),
+  completed: () => get("_crimboPastDailySpecial"),
   do: () => {
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
     const specialItemValue = mallPrice(specialItem);
@@ -300,13 +242,12 @@ const TaskBuyLoot: Task = {
   },
   limit: {
     tries: 1,
-  }
+  },
 };
 
 export function main(): void {
   const engine = new Engine([
     TaskLoop,
-    // TaskGetScripts,
     TaskRetrieveGear,
     TaskUnlockStore,
     TaskStarterFunds,
