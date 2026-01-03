@@ -11,6 +11,7 @@ import {
   mpCost,
   myAdventures,
   myHp,
+  myLevel,
   myMaxhp,
   myMaxmp,
   myMp,
@@ -118,10 +119,12 @@ const TaskDiet: Task = {
   name: "Diet",
   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
   do: () => {
-    const toConsume = dietOptions.find(
+    let toConsume = dietOptions.find(
       (x) =>
-        (x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
-        (x.inebriety !== 0 && x.inebriety <= getRemainingLiver()),
+        ((x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
+          (x.inebriety !== 0 && x.inebriety <= getRemainingLiver())) &&
+        !get("_roninStoragePulls").split(",").find((i) => i === `${x.item.id}`) &&
+        x.item.levelreq <= myLevel()
     );
 
     if (toConsume === undefined || toConsume.price >= 5000) {
@@ -145,7 +148,7 @@ const TaskDiet: Task = {
     if (dietOptions.length === 0) {
       Item.all()
         .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
-        .filter((i) => getAverageAdventures(i) >= 60 / 25)
+        .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25)
         .forEach((i) => {
           dietOptions.push({
             item: i,
