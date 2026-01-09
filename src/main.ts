@@ -250,7 +250,7 @@ const TaskBuyLoot: Task = {
     // buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
     visitUrl("main.php?talktosocp=1", false, true);
     visitUrl("choice.php?whichchoice=1567&option=4", true, true);
-    putShopUsingStorage(specialItemValue, 1, specialItem);
+    putShopUsingStorage(specialItemValue, 0, specialItem);
   },
   limit: {
     tries: 1,
