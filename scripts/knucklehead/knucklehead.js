@@ -4765,6 +4765,8 @@ var TaskLoop = {
       return i.fullness ^ i.inebriety && i.tradeable;
     }).filter(function(i) {
       return getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25;
+    }).filter(function(i) {
+      return getAverageAdventures(i) / (i.fullness | i.inebriety) <= 100 / 25;
     }).forEach(function(i) {
       dietOptions.push({
         item: i,
@@ -4873,7 +4875,7 @@ var TaskLoop = {
 };
 function main() {
   var engine = new Engine([TaskLoop, TaskRetrieveGear, TaskUnlockStore, TaskDiet, TaskStarterFunds].concat(_toConsumableArray9(QuestRecover.tasks), [TaskFightSkeletons, TaskBuyLoot]));
-  engine.run();
+  engine.run(), (0, import_kolmafia13.turnsPlayed)() === 100 && (0, import_kolmafia13.cliExecute)("breakfast");
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
