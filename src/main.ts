@@ -4,6 +4,7 @@ import {
   autosell,
   availableAmount,
   buyUsingStorage,
+  cliExecute,
   drinksilent,
   eatsilent,
   Item,
@@ -21,6 +22,7 @@ import {
   runChoice,
   storageAmount,
   takeStorage,
+  turnsPlayed,
   use,
   useSkill,
   visit,
@@ -276,4 +278,7 @@ export function main(): void {
     TaskBuyLoot,
   ]);
   engine.run();
+  if(turnsPlayed() === 100) {
+    cliExecute("breakfast");
+  }
 }
