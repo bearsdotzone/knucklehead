@@ -227,7 +227,9 @@ const TaskFightSkeletons: Task = {
   name: "Fight Skeletons",
   completed: () => get("_knuckleboneDrops") === 100,
   do: $location`The Skeleton Store`,
-  combat: new CombatStrategy().macro(Macro.step("pickpocket").attack().repeat()),
+  combat: new CombatStrategy()
+    .autoattack(Macro.step("pickpocket").attack().repeat())
+    .macro(Macro.step("pickpocket").attack().repeat()),
   outfit: {
     familiar: $familiar`Skeleton of Crimbo Past`,
     famequip: $item`small peppermint-flavored sugar walking crook`,
@@ -278,7 +280,7 @@ export function main(): void {
     TaskBuyLoot,
   ]);
   engine.run();
-  if(turnsPlayed() === 100) {
+  if (turnsPlayed() === 100) {
     cliExecute("breakfast");
   }
 }
