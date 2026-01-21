@@ -157,6 +157,7 @@ const TaskDiet: Task = {
       Item.all()
         .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
         .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25)
+        .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) <= 100 / 25)
         .forEach((i) => {
           dietOptions.push({
             item: i,
