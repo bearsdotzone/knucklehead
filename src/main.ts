@@ -280,7 +280,6 @@ export function main(): void {
     TaskBuyLoot,
   ]);
   engine.run();
-  if (turnsPlayed() === 100) {
-    cliExecute("breakfast");
-  }
+
+  cliExecute("breakfast");
 }
