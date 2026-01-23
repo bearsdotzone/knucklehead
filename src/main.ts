@@ -1,4 +1,4 @@
-import { CombatStrategy, Engine, Quest, step, Task } from "grimoire-kolmafia";
+import { Args, CombatStrategy, Engine, Quest, step, Task } from "grimoire-kolmafia";
 import {
   abort,
   autosell,
@@ -49,6 +49,13 @@ import {
 } from "libram";
 import { pricegunValue } from "./lib";
 
+const args = Args.create("knucklehead", "", {
+  ascend: Args.boolean({
+    default: true,
+    help: "Should knucklehead ascend after using all of its turns today?",
+  }),
+});
+
 const TaskLoop: Task = {
   name: "Ascending",
   completed: () => !visitUrl("place.php?whichplace=greygoo").includes("ascend.php"),
@@ -70,6 +77,7 @@ const TaskLoop: Task = {
     runChoice(1);
   },
   ready: () =>
+    args.ascend &&
     get(`_knuckleboneDrops`) === 100 &&
     visitUrl("place.php?whichplace=greygoo").includes("ascend.php"),
   limit: { tries: 1 },
@@ -268,7 +276,12 @@ const TaskBuyLoot: Task = {
   },
 };
 
-export function main(): void {
+export function main(command?: string): void {
+  Args.fill(args, command);
+  if (args.help) {
+    Args.showHelp(args);
+    return;
+  }
   const engine = new Engine([
     TaskLoop,
     TaskRetrieveGear,
