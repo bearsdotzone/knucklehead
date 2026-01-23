@@ -3,14 +3,17 @@ import {
   abort,
   autosell,
   availableAmount,
+  buy,
   buyUsingStorage,
   cliExecute,
   drinksilent,
+  eat,
   eatsilent,
   Item,
   mallPrice,
   mpCost,
   myAdventures,
+  myFullness,
   myHp,
   myLevel,
   myMaxhp,
@@ -34,10 +37,12 @@ import {
   $coinmaster,
   $familiar,
   $item,
+  $items,
   $location,
   $path,
   $skill,
   ascend,
+  bulkTakeStorage,
   get,
   getAverageAdventures,
   getRemainingLiver,
@@ -83,14 +88,29 @@ const TaskLoop: Task = {
   limit: { tries: 1 },
 };
 
+const retrievedGear = $items`bejeweled accordion strap, small peppermint-flavored sugar walking crook`;
+
 const TaskRetrieveGear: Task = {
   name: "Retrieve Gear from Storage",
-  completed: () =>
-    availableAmount($item`bejeweled accordion strap`) > 0 &&
-    availableAmount($item`small peppermint-flavored sugar walking crook`) > 0,
+  completed: () => retrievedGear.every((i) => availableAmount(i) > 0),
   do: () => {
-    takeStorage($item`bejeweled accordion strap`, 1);
-    takeStorage($item`small peppermint-flavored sugar walking crook`, 1);
+    retrievedGear.forEach((i) => takeStorage(i, 1));
+  },
+  limit: {
+    tries: 1,
+  },
+};
+
+const retrievedItems = $items`Bowl of Infinite Jelly, infinite BACON machine`;
+
+const TaskRetrieveItems: Task = {
+  name: "Retrieve Items from Storage",
+  completed: () => retrievedItems.every((i) => availableAmount(i) > 0),
+  do: () => {
+    retrievedItems.forEach((i) => takeStorage(i, 1));
+  },
+  limit: {
+    tries: 1,
   },
 };
 
@@ -122,71 +142,84 @@ const TaskStarterFunds: Task = {
   },
 };
 
-type DietEntry = {
-  item: Item;
-  adventures: number;
-  price: number;
-  fullness: number;
-  inebriety: number;
-};
-const dietOptions: DietEntry[] = [];
-
 const TaskDiet: Task = {
-  name: "Diet",
-  completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
+  name: "Got Milk?",
+  completed: () => myFullness() === 15,
   do: () => {
-    let toConsume = dietOptions.find(
-      (x) =>
-        ((x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
-          (x.inebriety !== 0 && x.inebriety <= getRemainingLiver())) &&
-        !get("_roninStoragePulls")
-          .split(",")
-          .find((i) => i === `${x.item.id}`) &&
-        x.item.levelreq <= myLevel(),
-    );
-
-    if (toConsume === undefined || toConsume.price >= 5000) {
-      abort("Couldn't find a suitable consumable.");
-    }
-    toConsume = toConsume as DietEntry;
-
-    if (toConsume.fullness) {
-      buyUsingStorage(toConsume.item);
-      takeStorage(toConsume.item, 1);
-      eatsilent(toConsume.item);
-    } else if (toConsume.inebriety) {
-      buyUsingStorage(toConsume.item);
-      takeStorage(toConsume.item, 1);
-      drinksilent(toConsume.item);
-    } else {
-      abort("Didn't consume anything!");
-    }
-  },
-  prepare: () => {
-    if (dietOptions.length === 0) {
-      Item.all()
-        .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
-        .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25)
-        .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) <= 100 / 25)
-        .forEach((i) => {
-          dietOptions.push({
-            item: i,
-            adventures: getAverageAdventures(i),
-            price: mallPrice(i),
-            fullness: i.fullness,
-            inebriety: i.inebriety,
-          });
-        });
-      dietOptions.sort((a, b) => b.adventures / b.price - a.adventures / a.price);
-    }
+    if (!get("_baconMachineUsed")) use($item`infinite BACON machine`);
+    buy($coinmaster`Internet Meme Shop`, 1, $item`gallon of milk`);
+    eat($item`gallon of milk`);
   },
   limit: {
-    tries: 19,
-  },
-  outfit: {
-    modifier: "mp",
+    tries: 2,
   },
 };
+
+// type DietEntry = {
+//   item: Item;
+//   adventures: number;
+//   price: number;
+//   fullness: number;
+//   inebriety: number;
+// };
+// const dietOptions: DietEntry[] = [];
+
+// const TaskDiet: Task = {
+//   name: "Diet",
+//   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
+//   do: () => {
+//     let toConsume = dietOptions.find(
+//       (x) =>
+//         ((x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
+//           (x.inebriety !== 0 && x.inebriety <= getRemainingLiver())) &&
+//         !get("_roninStoragePulls")
+//           .split(",")
+//           .find((i) => i === `${x.item.id}`) &&
+//         x.item.levelreq <= myLevel(),
+//     );
+
+//     if (toConsume === undefined || toConsume.price >= 5000) {
+//       abort("Couldn't find a suitable consumable.");
+//     }
+//     toConsume = toConsume as DietEntry;
+
+//     if (toConsume.fullness) {
+//       buyUsingStorage(toConsume.item);
+//       takeStorage(toConsume.item, 1);
+//       eatsilent(toConsume.item);
+//     } else if (toConsume.inebriety) {
+//       buyUsingStorage(toConsume.item);
+//       takeStorage(toConsume.item, 1);
+//       drinksilent(toConsume.item);
+//     } else {
+//       abort("Didn't consume anything!");
+//     }
+//   },
+//   prepare: () => {
+//     if (dietOptions.length === 0) {
+//       Item.all()
+//         .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
+//         .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25)
+//         .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) <= 100 / 25)
+//         .forEach((i) => {
+//           dietOptions.push({
+//             item: i,
+//             adventures: getAverageAdventures(i),
+//             price: mallPrice(i),
+//             fullness: i.fullness,
+//             inebriety: i.inebriety,
+//           });
+//         });
+//       dietOptions.sort((a, b) => b.adventures / b.price - a.adventures / a.price);
+//     }
+//   },
+//   limit: {
+//     tries: 19,
+//   },
+//   outfit: {
+//     modifier: "mp",
+//   },
+// };
 
 const QuestRecover: Quest<Task> = {
   name: "Recovering HP/MP",
@@ -285,6 +318,7 @@ export function main(command?: string): void {
   const engine = new Engine([
     TaskLoop,
     TaskRetrieveGear,
+    TaskRetrieveItems,
     TaskUnlockStore,
     TaskDiet,
     TaskStarterFunds,
