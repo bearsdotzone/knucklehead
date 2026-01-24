@@ -57,7 +57,7 @@ const TaskLoop: Task = {
       playerClass: $class`Accordion Thief`,
       lifestyle: Lifestyle.softcore,
       kolGender: KolGender.female,
-      moon: "packrat",
+      moon: "platypus",
       consumable: $item`none`,
       pet: $item`astral mask`,
     });
