@@ -235,8 +235,8 @@ const QuestRecover: Quest<Task> = {
     },
     {
       name: "Recover MP",
-      completed: () => myMp() >= Math.min(250, myMaxmp()),
-      do: () => restoreMp(300),
+      completed: () => myMp() >= 20,
+      do: () => restoreMp(40),
       limit: {
         tries: 20,
       },
