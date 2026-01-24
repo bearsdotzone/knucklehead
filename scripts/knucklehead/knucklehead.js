@@ -5465,10 +5465,10 @@ var args = Args.create("knucklehead", "", {
   }, {
     name: "Recover MP",
     completed: function() {
-      return (0, import_kolmafia13.myMp)() >= Math.min(250, (0, import_kolmafia13.myMaxmp)());
+      return (0, import_kolmafia13.myMp)() >= 20;
     },
     do: function() {
-      return (0, import_kolmafia13.restoreMp)(300);
+      return (0, import_kolmafia13.restoreMp)(40);
     },
     limit: {
       tries: 20
