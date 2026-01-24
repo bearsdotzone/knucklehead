@@ -5354,7 +5354,7 @@ var args = Args.create("knucklehead", "", {
       playerClass: $class(_templateObject215 || (_templateObject215 = _taggedTemplateLiteral6(["Accordion Thief"]))),
       lifestyle: Lifestyle.softcore,
       kolGender: KolGender.female,
-      moon: "packrat",
+      moon: "platypus",
       consumable: $item(_templateObject314 || (_templateObject314 = _taggedTemplateLiteral6(["none"]))),
       pet: $item(_templateObject413 || (_templateObject413 = _taggedTemplateLiteral6(["astral mask"])))
     });
