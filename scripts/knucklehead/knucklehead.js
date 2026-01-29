@@ -5304,18 +5304,11 @@ var import_kolmafia13 = require("kolmafia");
 
 // src/lib.ts
 var import_kolmafia12 = require("kolmafia");
-function pricegunValue(item) {
-  var pricegunData = (0, import_kolmafia12.visitUrl)("https://pricegun.loathers.net/api/".concat(item.id)), data = JSON.parse(pricegunData);
-  return !data || !data.value || parseInt(data.value) <= 0 ? 0 : parseInt(data.value);
+function _slicedToArray7(r, e) {
+  return _arrayWithHoles7(r) || _iterableToArrayLimit7(r, e) || _unsupportedIterableToArray11(r, e) || _nonIterableRest7();
 }
-
-// src/main.ts
-var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216, _templateObject224, _templateObject234, _templateObject244, _templateObject254, _templateObject264, _templateObject274, _templateObject284, _templateObject294;
-function _toConsumableArray9(r) {
-  return _arrayWithoutHoles9(r) || _iterableToArray9(r) || _unsupportedIterableToArray11(r) || _nonIterableSpread9();
-}
-function _nonIterableSpread9() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+function _nonIterableRest7() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 function _unsupportedIterableToArray11(r, a) {
   if (r) {
@@ -5324,13 +5317,86 @@ function _unsupportedIterableToArray11(r, a) {
     return t === "Object" && r.constructor && (t = r.constructor.name), t === "Map" || t === "Set" ? Array.from(r) : t === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray11(r, a) : void 0;
   }
 }
+function _arrayLikeToArray11(r, a) {
+  (a == null || a > r.length) && (a = r.length);
+  for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
+  return n;
+}
+function _iterableToArrayLimit7(r, l) {
+  var t = r == null ? null : typeof Symbol < "u" && r[Symbol.iterator] || r["@@iterator"];
+  if (t != null) {
+    var e, n, i, u, a = [], f = !0, o = !1;
+    try {
+      if (i = (t = t.call(r)).next, l === 0) {
+        if (Object(t) !== t) return;
+        f = !1;
+      } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0) ;
+    } catch (r2) {
+      o = !0, n = r2;
+    } finally {
+      try {
+        if (!f && t.return != null && (u = t.return(), Object(u) !== u)) return;
+      } finally {
+        if (o) throw n;
+      }
+    }
+    return a;
+  }
+}
+function _arrayWithHoles7(r) {
+  if (Array.isArray(r)) return r;
+}
+function prettyPrint(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+function pricegunValue2(item) {
+  var pricegunData = (0, import_kolmafia12.visitUrl)("https://pricegun.loathers.net/api/".concat(item.id)), data = JSON.parse(pricegunData);
+  if (!data || !data.value || parseFloat(data.value.__decimal__) <= 0) return [0, 0];
+  var lowestPrice = data.sales.reduce(function(acc, value) {
+    return Math.min(acc, parseInt(value.unitPrice.__decimal__));
+  }, parseInt(data.sales[0].unitPrice.__decimal__));
+  return [Math.floor(parseFloat(data.value.__decimal__)), lowestPrice];
+}
+function calculatePrice(item) {
+  var _pricegunValue = pricegunValue2(item), _pricegunValue2 = _slicedToArray7(_pricegunValue, 2), valuePricegun = _pricegunValue2[0], valuePricegunLow = _pricegunValue2[1], valueMall = (0, import_kolmafia12.mallPrice)(item), input = (0, import_kolmafia12.userPrompt)("Knucklebones: ".concat(get("_crimboPastDailySpecialPrice"), "\n    Mall: ").concat(prettyPrint(valueMall), "\n    Pricegun Low: ").concat(prettyPrint(valuePricegun), "\n    Pricegun Value: ").concat(prettyPrint(valuePricegunLow)).replace(/^\s+/gm, ""), {
+    Mall: "Mall",
+    "Pricegun Low": "Pricegun Low",
+    "Pricegun Value": "Pricegun Value",
+    Quit: "Quit"
+  });
+  switch (input) {
+    case "Mall":
+      return valueMall;
+    case "Pricegun Low":
+      return valuePricegunLow;
+    case "Pricegun Value":
+      return valuePricegun;
+  }
+  return -1;
+}
+
+// src/main.ts
+var _templateObject84, _templateObject215, _templateObject314, _templateObject413, _templateObject510, _templateObject610, _templateObject710, _templateObject85, _templateObject94, _templateObject03, _templateObject111, _templateObject104, _templateObject114, _templateObject124, _templateObject134, _templateObject144, _templateObject154, _templateObject164, _templateObject174, _templateObject184, _templateObject194, _templateObject204, _templateObject216, _templateObject224, _templateObject234, _templateObject244, _templateObject254, _templateObject264, _templateObject274, _templateObject284, _templateObject294;
+function _toConsumableArray9(r) {
+  return _arrayWithoutHoles9(r) || _iterableToArray9(r) || _unsupportedIterableToArray12(r) || _nonIterableSpread9();
+}
+function _nonIterableSpread9() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _unsupportedIterableToArray12(r, a) {
+  if (r) {
+    if (typeof r == "string") return _arrayLikeToArray12(r, a);
+    var t = {}.toString.call(r).slice(8, -1);
+    return t === "Object" && r.constructor && (t = r.constructor.name), t === "Map" || t === "Set" ? Array.from(r) : t === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray12(r, a) : void 0;
+  }
+}
 function _iterableToArray9(r) {
   if (typeof Symbol < "u" && r[Symbol.iterator] != null || r["@@iterator"] != null) return Array.from(r);
 }
 function _arrayWithoutHoles9(r) {
-  if (Array.isArray(r)) return _arrayLikeToArray11(r);
+  if (Array.isArray(r)) return _arrayLikeToArray12(r);
 }
-function _arrayLikeToArray11(r, a) {
+function _arrayLikeToArray12(r, a) {
   (a == null || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
@@ -5342,6 +5408,10 @@ var args = Args.create("knucklehead", "", {
   ascend: Args.boolean({
     default: !0,
     help: "Should knucklehead ascend after using all of its turns today?"
+  }),
+  buyItem: Args.boolean({
+    default: !0,
+    help: "Should knucklehead buy the shop item?"
   })
 }), TaskLoop = {
   name: "Ascending",
@@ -5497,22 +5567,22 @@ var args = Args.create("knucklehead", "", {
   choices: {
     1060: 5
   }
-}, TaskBuyLoot = {
+}, sellPrice = -1, TaskBuyLoot = {
   name: "Buy SOCP Shop Item",
   ready: function() {
     var _get;
     (0, import_kolmafia13.visit)($coinmaster(_templateObject254 || (_templateObject254 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))));
     var bonePrice = get("_crimboPastDailySpecialPrice"), specialItem = (_get = get("_crimboPastDailySpecialItem")) !== null && _get !== void 0 ? _get : $item(_templateObject264 || (_templateObject264 = _taggedTemplateLiteral6(["none"])));
     if (!specialItem.tradeable) return !1;
-    var availableKnucklebones = (0, import_kolmafia13.availableAmount)($item(_templateObject274 || (_templateObject274 = _taggedTemplateLiteral6(["knucklebone"])))) + (0, import_kolmafia13.storageAmount)($item(_templateObject284 || (_templateObject284 = _taggedTemplateLiteral6(["knucklebone"])))), specialItemValue = pricegunValue(specialItem);
-    return availableKnucklebones >= bonePrice && specialItemValue >= 5e3 * bonePrice;
+    var availableKnucklebones = (0, import_kolmafia13.availableAmount)($item(_templateObject274 || (_templateObject274 = _taggedTemplateLiteral6(["knucklebone"])))) + (0, import_kolmafia13.storageAmount)($item(_templateObject284 || (_templateObject284 = _taggedTemplateLiteral6(["knucklebone"]))));
+    return sellPrice = calculatePrice(specialItem), sellPrice === -1 ? ((0, import_kolmafia13.print)("Not buying ".concat(specialItem.name)), !1) : availableKnucklebones >= bonePrice && sellPrice >= 5e3 * bonePrice && args.buyItem;
   },
   completed: function() {
     return get("_crimboPastDailySpecial");
   },
   do: function() {
     var _get2, specialItem = (_get2 = get("_crimboPastDailySpecialItem")) !== null && _get2 !== void 0 ? _get2 : $item(_templateObject294 || (_templateObject294 = _taggedTemplateLiteral6(["none"]))), specialItemValue = pricegunValue(specialItem);
-    (0, import_kolmafia13.visitUrl)("main.php?talktosocp=1", !1, !0), (0, import_kolmafia13.visitUrl)("choice.php?whichchoice=1567&option=4", !0, !0), (0, import_kolmafia13.putShopUsingStorage)(specialItemValue, 0, specialItem);
+    (0, import_kolmafia13.visitUrl)("main.php?talktosocp=1", !1, !0), (0, import_kolmafia13.visitUrl)("choice.php?whichchoice=1567&option=4", !0, !0), (0, import_kolmafia13.print)("Listing ".concat(specialItem.name, " @ ").concat(sellPrice)), (0, import_kolmafia13.putShopUsingStorage)(sellPrice, 0, specialItem);
   },
   limit: {
     tries: 1
