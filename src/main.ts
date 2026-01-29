@@ -11,6 +11,8 @@ import {
   myMaxhp,
   myMaxmp,
   myMp,
+  myName,
+  print,
   pullsRemaining,
   putShopUsingStorage,
   restoreMp,
@@ -39,12 +41,16 @@ import {
   Lifestyle,
   Macro,
 } from "libram";
-import { pricegunValue } from "./lib";
+import { calculatePrice } from "./lib";
 
 const args = Args.create("knucklehead", "", {
   ascend: Args.boolean({
     default: true,
     help: "Should knucklehead ascend after using all of its turns today?",
+  }),
+  buyItem: Args.boolean({
+    default: true,
+    help: "Should knucklehead buy the shop item?",
   }),
 });
 
@@ -268,6 +274,8 @@ const TaskFightSkeletons: Task = {
   },
 };
 
+let sellPrice = -1;
+
 const TaskBuyLoot: Task = {
   name: "Buy SOCP Shop Item",
   ready: () => {
@@ -277,9 +285,14 @@ const TaskBuyLoot: Task = {
     if (!specialItem.tradeable) return false;
     const availableKnucklebones =
       availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
-    const specialItemValue = pricegunValue(specialItem);
+    sellPrice = calculatePrice(specialItem);
 
-    return availableKnucklebones >= bonePrice && specialItemValue >= 5000 * bonePrice;
+    if (sellPrice === -1) {
+      print(`Not buying ${specialItem.name}`);
+      return false;
+    }
+
+    return availableKnucklebones >= bonePrice && sellPrice >= 5000 * bonePrice && args.buyItem;
   },
   completed: () => get("_crimboPastDailySpecial"),
   do: () => {
@@ -289,7 +302,8 @@ const TaskBuyLoot: Task = {
     // buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
     visitUrl("main.php?talktosocp=1", false, true);
     visitUrl("choice.php?whichchoice=1567&option=4", true, true);
-    putShopUsingStorage(specialItemValue, 0, specialItem);
+    print(`Listing ${specialItem.name} @ ${sellPrice}`);
+    putShopUsingStorage(sellPrice, 0, specialItem);
   },
   limit: {
     tries: 1,
