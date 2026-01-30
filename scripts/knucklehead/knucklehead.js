@@ -5451,25 +5451,6 @@ var args = Args.create("knucklehead", "", {
   limit: {
     tries: 1
   }
-}, pulls = $items(_templateObject510 || (_templateObject510 = _taggedTemplateLiteral6(["Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook"]))), foods = [[$item(_templateObject610 || (_templateObject610 = _taggedTemplateLiteral6(["abstraction: perception"]))), 200], [$item(_templateObject710 || (_templateObject710 = _taggedTemplateLiteral6(["mini kiwitini"]))), 2e3], [$item(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral6(["Island Hurricane"]))), 900]], TaskPulls = {
-  name: "Retrieving Items from Storage",
-  completed: function() {
-    return pulls.every(function(i) {
-      return (0, import_kolmafia13.availableAmount)(i) > 0 || get("_roninStoragePulls").split(",").find(function(j) {
-        return parseInt(j) === i.id;
-      });
-    });
-  },
-  do: function() {
-    args.level && (pulls.push.apply(pulls, _toConsumableArray9($items(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral6(["noir fedora, backwoods banjo, smoker's cloak, KoL Con 13 T-shirt, scorched skeleton pants, stainless steel scarf, Amulet of Perpetual Darkness, C.A.R.N.I.V.O.R.E. button, green LavaCo Lamp\u2122"]))))), foods.forEach(function(i) {
-      pulls.push(i[0]), (0, import_kolmafia13.buyUsingStorage)(i[0], 1, i[1]);
-    })), pulls.forEach(function(i) {
-      (0, import_kolmafia13.takeStorage)(i, 1);
-    }), args.level || (0, import_kolmafia13.visitUrl)("storage.php?name=addmeat&which=5&action=takemeat&amt=".concat((0, import_kolmafia13.pullsRemaining)(), "000"), !0, !0);
-  },
-  limit: {
-    tries: 2
-  }
 }, TaskUnlockStore = {
   name: "Unlock Skeleton Store",
   completed: function() {
@@ -5487,7 +5468,26 @@ var args = Args.create("knucklehead", "", {
     return step("questM05Toot") === 999;
   },
   do: function() {
-    (0, import_kolmafia13.visitUrl)("tutorial.php?action=toot", !0), (0, import_kolmafia13.use)($item(_templateObject03 || (_templateObject03 = _taggedTemplateLiteral6(["letter from King Ralph XI"])))), (0, import_kolmafia13.use)($item(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral6(["pork elf goodies sack"])))), (0, import_kolmafia13.autosell)($item(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral6(["baconstone"]))), 5), (0, import_kolmafia13.autosell)($item(_templateObject114 || (_templateObject114 = _taggedTemplateLiteral6(["hamethyst"]))), 5), (0, import_kolmafia13.autosell)($item(_templateObject124 || (_templateObject124 = _taggedTemplateLiteral6(["porquoise"]))), 5);
+    (0, import_kolmafia13.visitUrl)("tutorial.php?action=toot", !0), (0, import_kolmafia13.use)($item(_templateObject510 || (_templateObject510 = _taggedTemplateLiteral6(["letter from King Ralph XI"])))), (0, import_kolmafia13.use)($item(_templateObject610 || (_templateObject610 = _taggedTemplateLiteral6(["pork elf goodies sack"])))), (0, import_kolmafia13.autosell)($item(_templateObject710 || (_templateObject710 = _taggedTemplateLiteral6(["baconstone"]))), 5), (0, import_kolmafia13.autosell)($item(_templateObject85 || (_templateObject85 = _taggedTemplateLiteral6(["hamethyst"]))), 5), (0, import_kolmafia13.autosell)($item(_templateObject94 || (_templateObject94 = _taggedTemplateLiteral6(["porquoise"]))), 5);
+  }
+}, pulls = $items(_templateObject03 || (_templateObject03 = _taggedTemplateLiteral6(["Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook"]))), foods = [[$item(_templateObject111 || (_templateObject111 = _taggedTemplateLiteral6(["abstraction: perception"]))), 200], [$item(_templateObject104 || (_templateObject104 = _taggedTemplateLiteral6(["mini kiwitini"]))), 2e3], [$item(_templateObject114 || (_templateObject114 = _taggedTemplateLiteral6(["Island Hurricane"]))), 900]], TaskPulls = {
+  name: "Retrieving Items from Storage",
+  completed: function() {
+    return pulls.every(function(i) {
+      return (0, import_kolmafia13.availableAmount)(i) > 0 || get("_roninStoragePulls").split(",").find(function(j) {
+        return parseInt(j) === i.id;
+      });
+    });
+  },
+  do: function() {
+    args.level && (pulls.push.apply(pulls, _toConsumableArray9($items(_templateObject124 || (_templateObject124 = _taggedTemplateLiteral6(["noir fedora, backwoods banjo, smoker's cloak, KoL Con 13 T-shirt, scorched skeleton pants, stainless steel scarf, Amulet of Perpetual Darkness, C.A.R.N.I.V.O.R.E. button, green LavaCo Lamp\u2122"]))))), foods.forEach(function(i) {
+      pulls.push(i[0]), (0, import_kolmafia13.buyUsingStorage)(i[0], 1, i[1]);
+    })), pulls.forEach(function(i) {
+      (0, import_kolmafia13.takeStorage)(i, 1);
+    }), args.level || (0, import_kolmafia13.visitUrl)("storage.php?name=addmeat&which=5&action=takemeat&amt=".concat((0, import_kolmafia13.pullsRemaining)(), "000"), !0, !0);
+  },
+  limit: {
+    tries: 2
   }
 }, TaskDiet = {
   name: "Got Milk?",
@@ -5644,7 +5644,7 @@ function main(command) {
     Args.showHelp(args);
     return;
   }
-  var engine = new Engine([TaskLoop, TaskPulls, TaskUnlockStore, TaskDiet, TaskStarterFunds].concat(_toConsumableArray9(QuestRecover.tasks), [TaskFightSkeletons, TaskPromptValue, TaskBuyLoot, TaskBedtime, TaskBreakfast]));
+  var engine = new Engine([TaskLoop, TaskUnlockStore, TaskStarterFunds, TaskPulls, TaskDiet].concat(_toConsumableArray9(QuestRecover.tasks), [TaskFightSkeletons, TaskPromptValue, TaskBuyLoot, TaskBedtime, TaskBreakfast]));
   engine.run();
 }
 // Annotate the CommonJS export names for ESM import in node:
