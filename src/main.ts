@@ -91,6 +91,29 @@ const TaskLoop: Task = {
   limit: { tries: 1 },
 };
 
+const TaskUnlockStore: Task = {
+  name: "Unlock Skeleton Store",
+  completed: () => step("questM23Meatsmith") !== -1,
+  do: () => {
+    visitUrl("shop.php?whichshop=meatsmith&action=talk", true);
+    runChoice(1);
+  },
+  limit: { tries: 1 },
+};
+
+const TaskStarterFunds: Task = {
+  name: "Sell Oriole Gems",
+  completed: () => step("questM05Toot") === 999,
+  do: () => {
+    visitUrl("tutorial.php?action=toot", true);
+    use($item`letter from King Ralph XI`);
+    use($item`pork elf goodies sack`);
+    autosell($item`baconstone`, 5);
+    autosell($item`hamethyst`, 5);
+    autosell($item`porquoise`, 5);
+  },
+};
+
 // Consider adding an accordion
 const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook`;
 const foods: [Item, number][] = [
@@ -136,29 +159,6 @@ const TaskPulls: Task = {
   },
   limit: {
     tries: 2,
-  },
-};
-
-const TaskUnlockStore: Task = {
-  name: "Unlock Skeleton Store",
-  completed: () => step("questM23Meatsmith") !== -1,
-  do: () => {
-    visitUrl("shop.php?whichshop=meatsmith&action=talk", true);
-    runChoice(1);
-  },
-  limit: { tries: 1 },
-};
-
-const TaskStarterFunds: Task = {
-  name: "Sell Oriole Gems",
-  completed: () => step("questM05Toot") === 999,
-  do: () => {
-    visitUrl("tutorial.php?action=toot", true);
-    use($item`letter from King Ralph XI`);
-    use($item`pork elf goodies sack`);
-    autosell($item`baconstone`, 5);
-    autosell($item`hamethyst`, 5);
-    autosell($item`porquoise`, 5);
   },
 };
 
@@ -331,10 +331,10 @@ export function main(command?: string): void {
   }
   const engine = new Engine([
     TaskLoop,
-    TaskPulls,
     TaskUnlockStore,
-    TaskDiet,
     TaskStarterFunds,
+    TaskPulls,
+    TaskDiet,
     ...QuestRecover.tasks,
     TaskFightSkeletons,
     TaskPromptValue,
