@@ -25,9 +25,9 @@ export function calculatePrice(item: Item): number {
 
   const input = userPrompt(
     `Knucklebones: ${knucklebonePrice}
-    Mall: ${prettyPrint(valueMall)} Per: ${valueMall / knucklebonePrice}
-    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${valuePricegun / knucklebonePrice}
-    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${valuePricegunLow / knucklebonePrice}`.replace(
+    Mall: ${prettyPrint(valueMall)} Per: ${Math.round(valueMall / knucklebonePrice)}
+    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${Math.round(valuePricegun / knucklebonePrice)}
+    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${Math.round(valuePricegunLow / knucklebonePrice)}`.replace(
       /^\s+/gm,
       "",
     ),
