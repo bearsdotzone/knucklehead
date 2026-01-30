@@ -3,15 +3,19 @@ import {
   autosell,
   availableAmount,
   buy,
+  buyUsingStorage,
+  changeMcd,
   cliExecute,
+  currentMcd,
+  drinksilent,
   eat,
+  Item,
   mpCost,
+  myAdventures,
   myFullness,
   myHp,
   myMaxhp,
-  myMaxmp,
   myMp,
-  myName,
   print,
   pullsRemaining,
   putShopUsingStorage,
@@ -40,17 +44,22 @@ import {
   KolGender,
   Lifestyle,
   Macro,
+  unequip,
 } from "libram";
 import { calculatePrice } from "./lib";
 
 const args = Args.create("knucklehead", "", {
   ascend: Args.boolean({
     default: true,
-    help: "Should knucklehead ascend after using all of its turns today?",
+    help: "Set to false to stay in run.",
   }),
   buyItem: Args.boolean({
     default: true,
-    help: "Should knucklehead buy the shop item?",
+    help: "Set to false to never buy the special item",
+  }),
+  level: Args.boolean({
+    default: false,
+    help: "Set to true to attempt to level to 15, should be used with -ascend",
   }),
 });
 
@@ -77,33 +86,56 @@ const TaskLoop: Task = {
   ready: () =>
     args.ascend &&
     get(`_knuckleboneDrops`) === 100 &&
+    (args.level ? myAdventures() === 0 : true) &&
     visitUrl("place.php?whichplace=greygoo").includes("ascend.php"),
   limit: { tries: 1 },
 };
 
-const retrievedGear = $items`bejeweled accordion strap, small peppermint-flavored sugar walking crook`;
+// Consider adding an accordion
+const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook`;
+const foods: [Item, number][] = [
+  [$item`abstraction: perception`, 200],
+  [$item`mini kiwitini`, 2000],
+  [$item`Island Hurricane`, 900],
+];
+// const hurricane = $item`Island Hurricane`;
+// buyUsingStorage(hurricane, 1, 900);
 
-const TaskRetrieveGear: Task = {
-  name: "Retrieve Gear from Storage",
-  completed: () => retrievedGear.every((i) => availableAmount(i) > 0),
+const TaskPulls: Task = {
+  name: "Retrieving Items from Storage",
+  completed: () =>
+    pulls.every((i) => {
+      return (
+        availableAmount(i) > 0 ||
+        get("_roninStoragePulls")
+          .split(",")
+          .find((j) => parseInt(j) === i.id)
+      );
+    }),
   do: () => {
-    retrievedGear.forEach((i) => takeStorage(i, 1));
+    if (args.level) {
+      pulls.push(
+        ...$items`noir fedora, backwoods banjo, smoker's cloak, KoL Con 13 T-shirt, scorched skeleton pants, stainless steel scarf, Amulet of Perpetual Darkness, C.A.R.N.I.V.O.R.E. button, green LavaCo Lamp™`,
+      );
+
+      foods.forEach((i) => {
+        pulls.push(i[0]);
+        buyUsingStorage(i[0], 1, i[1]);
+      });
+    }
+    pulls.forEach((i) => {
+      takeStorage(i, 1);
+    });
+    // Get some starting cash
+    if (!args.level)
+      visitUrl(
+        `storage.php?name=addmeat&which=5&action=takemeat&amt=${pullsRemaining()}000`,
+        true,
+        true,
+      );
   },
   limit: {
-    tries: 1,
-  },
-};
-
-const retrievedItems = $items`Bowl of Infinite Jelly, infinite BACON machine`;
-
-const TaskRetrieveItems: Task = {
-  name: "Retrieve Items from Storage",
-  completed: () => retrievedItems.every((i) => availableAmount(i) > 0),
-  do: () => {
-    retrievedItems.forEach((i) => takeStorage(i, 1));
-  },
-  limit: {
-    tries: 1,
+    tries: 2,
   },
 };
 
@@ -127,11 +159,6 @@ const TaskStarterFunds: Task = {
     autosell($item`baconstone`, 5);
     autosell($item`hamethyst`, 5);
     autosell($item`porquoise`, 5);
-    visitUrl(
-      `storage.php?name=addmeat&which=5&action=takemeat&amt=${pullsRemaining()}000`,
-      true,
-      true,
-    );
   },
 };
 
@@ -139,6 +166,15 @@ const TaskDiet: Task = {
   name: "Got Milk?",
   completed: () => myFullness() === 15,
   do: () => {
+    if (args.level) {
+      foods.forEach((i) => {
+        if (i[0].inebriety) {
+          drinksilent(i[0]);
+        } else if (i[0].spleen) {
+          use(i[0]);
+        }
+      });
+    }
     if (!get("_baconMachineUsed")) use($item`infinite BACON machine`);
     buy($coinmaster`Internet Meme Shop`, 1, $item`gallon of milk`);
     eat($item`gallon of milk`);
@@ -146,73 +182,8 @@ const TaskDiet: Task = {
   limit: {
     tries: 2,
   },
+  outfit: () => (args.level ? { modifier: "moxie experience percent" } : {}),
 };
-
-// type DietEntry = {
-//   item: Item;
-//   adventures: number;
-//   price: number;
-//   fullness: number;
-//   inebriety: number;
-// };
-// const dietOptions: DietEntry[] = [];
-
-// const TaskDiet: Task = {
-//   name: "Diet",
-//   completed: () => myAdventures() >= 100 - get(`_knuckleboneDrops`),
-//   do: () => {
-//     let toConsume = dietOptions.find(
-//       (x) =>
-//         ((x.fullness !== 0 && x.fullness <= getRemainingStomach()) ||
-//           (x.inebriety !== 0 && x.inebriety <= getRemainingLiver())) &&
-//         !get("_roninStoragePulls")
-//           .split(",")
-//           .find((i) => i === `${x.item.id}`) &&
-//         x.item.levelreq <= myLevel(),
-//     );
-
-//     if (toConsume === undefined || toConsume.price >= 5000) {
-//       abort("Couldn't find a suitable consumable.");
-//     }
-//     toConsume = toConsume as DietEntry;
-
-//     if (toConsume.fullness) {
-//       buyUsingStorage(toConsume.item);
-//       takeStorage(toConsume.item, 1);
-//       eatsilent(toConsume.item);
-//     } else if (toConsume.inebriety) {
-//       buyUsingStorage(toConsume.item);
-//       takeStorage(toConsume.item, 1);
-//       drinksilent(toConsume.item);
-//     } else {
-//       abort("Didn't consume anything!");
-//     }
-//   },
-//   prepare: () => {
-//     if (dietOptions.length === 0) {
-//       Item.all()
-//         .filter((i) => i.fullness ^ i.inebriety && i.tradeable)
-//         .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) >= 60 / 25)
-//         .filter((i) => getAverageAdventures(i) / (i.fullness | i.inebriety) <= 100 / 25)
-//         .forEach((i) => {
-//           dietOptions.push({
-//             item: i,
-//             adventures: getAverageAdventures(i),
-//             price: mallPrice(i),
-//             fullness: i.fullness,
-//             inebriety: i.inebriety,
-//           });
-//         });
-//       dietOptions.sort((a, b) => b.adventures / b.price - a.adventures / a.price);
-//     }
-//   },
-//   limit: {
-//     tries: 19,
-//   },
-//   outfit: {
-//     modifier: "mp",
-//   },
-// };
 
 const QuestRecover: Quest<Task> = {
   name: "Recovering HP/MP",
@@ -241,8 +212,8 @@ const QuestRecover: Quest<Task> = {
     },
     {
       name: "Recover MP",
-      completed: () => myMp() >= 20,
-      do: () => restoreMp(40),
+      completed: () => myMp() >= 75,
+      do: () => restoreMp(75),
       limit: {
         tries: 20,
       },
@@ -259,7 +230,7 @@ const QuestRecover: Quest<Task> = {
 
 const TaskFightSkeletons: Task = {
   name: "Fight Skeletons",
-  completed: () => get("_knuckleboneDrops") === 100,
+  completed: () => (args.level ? myAdventures() === 0 : get("_knuckleboneDrops") === 100),
   do: $location`The Skeleton Store`,
   combat: new CombatStrategy()
     .autoattack(Macro.step("pickpocket").attack().repeat())
@@ -267,37 +238,62 @@ const TaskFightSkeletons: Task = {
   outfit: {
     familiar: $familiar`Skeleton of Crimbo Past`,
     famequip: $item`small peppermint-flavored sugar walking crook`,
-    modifier: "item",
+    modifier: args.level ? "moxie experience percent, 0.1 ml" : "item",
   },
   choices: {
     1060: 5,
   },
+  prepare: () => {
+    if (args.level && currentMcd() !== 11) {
+      changeMcd(11);
+    }
+  },
 };
 
-let sellPrice = -1;
+const enum query {
+  MAYBUY,
+  NOTBUYING,
+  BUYING,
+}
 
-const TaskBuyLoot: Task = {
-  name: "Buy SOCP Shop Item",
-  ready: () => {
-    visit($coinmaster`Skeleton of Crimbo Past`);
-    const bonePrice = get("_crimboPastDailySpecialPrice");
+let sellPrice = -1;
+let decision = query.MAYBUY;
+
+const TaskPromptValue: Task = {
+  name: "Prompt user for value",
+  do: () => {
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
-    if (!specialItem.tradeable) return false;
-    const availableKnucklebones =
-      availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
+    if (!specialItem.tradeable || !args.buyItem) {
+      decision = query.NOTBUYING;
+      return;
+    }
     sellPrice = calculatePrice(specialItem);
 
     if (sellPrice === -1) {
       print(`Not buying ${specialItem.name}`);
-      return false;
+      decision = query.NOTBUYING;
+      return;
     }
 
-    return availableKnucklebones >= bonePrice && sellPrice >= 5000 * bonePrice && args.buyItem;
+    decision = query.BUYING;
+    return true;
   },
+  completed: () => decision !== query.MAYBUY,
+  ready: () => {
+    visit($coinmaster`Skeleton of Crimbo Past`);
+    return (
+      availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`) >
+      get("_crimboPastDailySpecialPrice")
+    );
+  },
+};
+
+const TaskBuyLoot: Task = {
+  name: "Buy SOCP Shop Item",
+  ready: () => decision === query.BUYING && sellPrice !== -1,
   completed: () => get("_crimboPastDailySpecial"),
   do: () => {
     const specialItem = get("_crimboPastDailySpecialItem") ?? $item`none`;
-    const specialItemValue = pricegunValue(specialItem);
 
     // buy($coinmaster`Skeleton of Crimbo Past`, 1, specialItem);
     visitUrl("main.php?talktosocp=1", false, true);
@@ -305,9 +301,26 @@ const TaskBuyLoot: Task = {
     print(`Listing ${specialItem.name} @ ${sellPrice}`);
     putShopUsingStorage(sellPrice, 0, specialItem);
   },
-  limit: {
-    tries: 1,
+};
+
+const TaskBedtime: Task = {
+  name: "Bedtime",
+  completed: () => false,
+  do: () => {},
+  ready: () => args.level,
+  outfit: {
+    beforeDress: [() => unequip($item`backwoods banjo`)],
+    offhand: $item`green LavaCo Lamp™`,
   },
+  limit: {
+    skip: 1,
+  },
+};
+
+const TaskBreakfast: Task = {
+  name: "Breakfast",
+  completed: () => get("breakfastCompleted"),
+  do: () => cliExecute("breakfast"),
 };
 
 export function main(command?: string): void {
@@ -318,16 +331,16 @@ export function main(command?: string): void {
   }
   const engine = new Engine([
     TaskLoop,
-    TaskRetrieveGear,
-    TaskRetrieveItems,
+    TaskPulls,
     TaskUnlockStore,
     TaskDiet,
     TaskStarterFunds,
     ...QuestRecover.tasks,
     TaskFightSkeletons,
+    TaskPromptValue,
     TaskBuyLoot,
+    TaskBedtime,
+    TaskBreakfast,
   ]);
   engine.run();
-
-  cliExecute("breakfast");
 }
