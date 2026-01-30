@@ -21,12 +21,16 @@ function pricegunValue(item: Item): [number, number] {
 export function calculatePrice(item: Item): number {
   const [valuePricegun, valuePricegunLow] = pricegunValue(item);
   const valueMall = mallPrice(item);
+  const knucklebonePrice = get("_crimboPastDailySpecialPrice");
 
   const input = userPrompt(
-    `Knucklebones: ${get("_crimboPastDailySpecialPrice")}
-    Mall: ${prettyPrint(valueMall)}
-    Pricegun Low: ${prettyPrint(valuePricegun)}
-    Pricegun Value: ${prettyPrint(valuePricegunLow)}`.replace(/^\s+/gm, ""),
+    `Knucklebones: ${knucklebonePrice}
+    Mall: ${prettyPrint(valueMall)} Per: ${valueMall / knucklebonePrice}
+    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${valuePricegun / knucklebonePrice}
+    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${valuePricegunLow / knucklebonePrice}`.replace(
+      /^\s+/gm,
+      "",
+    ),
     {
       Mall: "Mall",
       "Pricegun Low": "Pricegun Low",
