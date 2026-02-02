@@ -9,9 +9,12 @@ import {
   currentMcd,
   drinksilent,
   eat,
+  haveEffect,
+  haveSkill,
   Item,
   mpCost,
   myAdventures,
+  myClass,
   myFullness,
   myHp,
   myMaxhp,
@@ -32,6 +35,7 @@ import {
 import {
   $class,
   $coinmaster,
+  $effect,
   $familiar,
   $item,
   $items,
@@ -115,7 +119,7 @@ const TaskStarterFunds: Task = {
 };
 
 // Consider adding an accordion
-const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook`;
+const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook, Ouija Board\, Ouija Board`;
 const foods: [Item, number][] = [
   [$item`abstraction: perception`, 200],
   [$item`mini kiwitini`, 2000],
@@ -146,8 +150,14 @@ const TaskPulls: Task = {
         buyUsingStorage(i[0], 1, i[1]);
       });
     }
+    if (myClass() === $class`Accordion Thief`) {
+      pulls.push($item`alarm accordion`);
+    } else {
+      pulls.push($item`antique accordion`);
+    }
+    if (pulls.length >= 20) throw "Attempting to pull too many items from storage!";
     pulls.forEach((i) => {
-      takeStorage(i, 1);
+      if (availableAmount(i) === 0) takeStorage(i, 1);
     });
     // Get some starting cash
     if (!args.level)
@@ -186,15 +196,15 @@ const TaskDiet: Task = {
 };
 
 const QuestRecover: Quest<Task> = {
-  name: "Recovering HP/MP",
+  name: "Recovering",
   tasks: [
     {
-      name: "Funds",
+      name: "Selling Items",
       completed: () => availableAmount($item`half of a gold tooth`) < 10,
       do: () => autosell($item`half of a gold tooth`, 10),
     },
     {
-      name: "Recover",
+      name: "Health - Cocoon",
       ready: () => have($skill`Cannelloni Cocoon`) && myMp() >= mpCost($skill`Cannelloni Cocoon`),
       completed: () => myHp() / myMaxhp() >= 0.75,
       do: () => {
@@ -202,7 +212,7 @@ const QuestRecover: Quest<Task> = {
       },
     },
     {
-      name: "Recover Tongue",
+      name: "Health - Tongue",
       ready: () =>
         have($skill`Tongue of the Walrus`) && myMp() >= mpCost($skill`Tongue of the Walrus`),
       completed: () => myHp() / myMaxhp() >= 0.75,
@@ -211,7 +221,7 @@ const QuestRecover: Quest<Task> = {
       },
     },
     {
-      name: "Recover MP",
+      name: "MP",
       completed: () => myMp() >= 75,
       do: () => restoreMp(75),
       limit: {
@@ -219,11 +229,35 @@ const QuestRecover: Quest<Task> = {
       },
     },
     {
-      name: "Recover Failed",
+      name: "Failed",
       completed: () => myHp() / myMaxhp() >= 0.5,
       do: () => {
         throw "Unable to heal above 50% HP, heal yourself!";
       },
+    },
+  ],
+};
+
+const QuestBuff: Quest<Task> = {
+  name: "Buffing",
+  tasks: [
+    {
+      name: "Fat Leon's Phat Loot Lyric",
+      ready: () => haveSkill($skill`Fat Leon's Phat Loot Lyric`),
+      do: () => useSkill($skill`Fat Leon's Phat Loot Lyric`),
+      completed: () => haveEffect($effect`Fat Leon's Phat Loot Lyric`) > 0,
+    },
+    {
+      name: "Ur-Kel's Aria of Annoyance",
+      ready: () => haveSkill($skill`Ur-Kel's Aria of Annoyance`) && args.level,
+      do: () => useSkill($skill`Ur-Kel's Aria of Annoyance`),
+      completed: () => haveEffect($effect`Ur-Kel's Aria of Annoyance`) > 0,
+    },
+    {
+      name: "Empathy of the Newt",
+      ready: () => haveSkill($skill`Empathy of the Newt`),
+      do: () => useSkill($skill`Empathy of the Newt`),
+      completed: () => haveEffect($effect`Empathy`) > 0,
     },
   ],
 };
@@ -336,6 +370,7 @@ export function main(command?: string): void {
     TaskPulls,
     TaskDiet,
     ...QuestRecover.tasks,
+    ...QuestBuff.tasks,
     TaskFightSkeletons,
     TaskPromptValue,
     TaskBuyLoot,
