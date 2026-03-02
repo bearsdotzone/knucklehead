@@ -119,7 +119,7 @@ const TaskStarterFunds: Task = {
 };
 
 // Consider adding an accordion
-const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook, Ouija Board\, Ouija Board`;
+const pulls = $items`Bowl of Infinite Jelly, infinite BACON machine, small peppermint-flavored sugar walking crook, Ouija Board\, Ouija Board, can of mixed everything`;
 const foods: [Item, number][] = [
   [$item`abstraction: perception`, 200],
   [$item`mini kiwitini`, 2000],
@@ -270,6 +270,7 @@ const TaskFightSkeletons: Task = {
     .autoattack(Macro.step("pickpocket").attack().repeat())
     .macro(Macro.step("pickpocket").attack().repeat()),
   outfit: {
+    offhand: $item`can of mixed everything`,
     familiar: $familiar`Skeleton of Crimbo Past`,
     famequip: $item`small peppermint-flavored sugar walking crook`,
     modifier: args.level ? "moxie experience percent, 0.1 ml" : "item",
