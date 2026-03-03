@@ -14,6 +14,7 @@ import {
   Item,
   mpCost,
   myAdventures,
+  myBasestat,
   myClass,
   myFullness,
   myHp,
@@ -42,6 +43,7 @@ import {
   $location,
   $path,
   $skill,
+  $stat,
   ascend,
   get,
   have,
@@ -270,7 +272,7 @@ const TaskFightSkeletons: Task = {
     .autoattack(Macro.step("pickpocket").attack().repeat())
     .macro(Macro.step("pickpocket").attack().repeat()),
   outfit: {
-    offhand: $item`can of mixed everything`,
+    offhand: myBasestat($stat`mysticality`) >= 30 ? $item`can of mixed everything` : undefined,
     familiar: $familiar`Skeleton of Crimbo Past`,
     famequip: $item`small peppermint-flavored sugar walking crook`,
     modifier: args.level ? "moxie experience percent, 0.1 ml" : "item",
