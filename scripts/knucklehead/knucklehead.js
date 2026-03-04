@@ -5365,7 +5365,9 @@ function pricegunValue(item) {
   return [Math.floor(parseFloat(data.value.__decimal__)), lowestPrice];
 }
 function calculatePrice(item) {
-  var _pricegunValue = pricegunValue(item), _pricegunValue2 = _slicedToArray7(_pricegunValue, 2), valuePricegun = _pricegunValue2[0], valuePricegunLow = _pricegunValue2[1], valueMall = (0, import_kolmafia12.mallPrice)(item), knucklebonePrice = get("_crimboPastDailySpecialPrice"), input = (0, import_kolmafia12.userPrompt)("Knucklebones: ".concat(knucklebonePrice, "\n    Mall: ").concat(prettyPrint(valueMall), " Per: ").concat(Math.round(valueMall / knucklebonePrice), "\n    Pricegun Low: ").concat(prettyPrint(valuePricegun), " Per: ").concat(Math.round(valuePricegun / knucklebonePrice), "\n    Pricegun Value: ").concat(prettyPrint(valuePricegunLow), " Per: ").concat(Math.round(valuePricegunLow / knucklebonePrice)).replace(/^\s+/gm, ""), {
+  var _pricegunValue = pricegunValue(item), _pricegunValue2 = _slicedToArray7(_pricegunValue, 2), valuePricegun = _pricegunValue2[0], valuePricegunLow = _pricegunValue2[1], valueMall = (0, import_kolmafia12.mallPrice)(item), knucklebonePrice = get("_crimboPastDailySpecialPrice"), mallRatio = Math.round(valueMall / knucklebonePrice), pricegunLowRatio = Math.round(valuePricegunLow / knucklebonePrice), pricegunRatio = Math.round(valuePricegun / knucklebonePrice);
+  if (Math.max(mallRatio, pricegunLowRatio, pricegunRatio) < 3e3) return -1;
+  var input = (0, import_kolmafia12.userPrompt)("Knucklebones: ".concat(knucklebonePrice, "\n    Mall: ").concat(prettyPrint(valueMall), " Per: ").concat(mallRatio, "\n    Pricegun Low: ").concat(prettyPrint(valuePricegun), " Per: ").concat(pricegunLowRatio, "\n    Pricegun Value: ").concat(prettyPrint(valuePricegunLow), " Per: ").concat(pricegunRatio).replace(/^\s+/gm, ""), {
     Mall: "Mall",
     "Pricegun Low": "Pricegun Low",
     "Pricegun Value": "Pricegun Value",
@@ -5603,11 +5605,17 @@ var args = Args.create("knucklehead", "", {
   },
   do: $location(_templateObject373 || (_templateObject373 = _taggedTemplateLiteral6(["The Skeleton Store"]))),
   combat: new CombatStrategy().autoattack(Macro.step("pickpocket").attack().repeat()).macro(Macro.step("pickpocket").attack().repeat()),
-  outfit: {
-    offhand: (0, import_kolmafia13.myBasestat)($stat(_templateObject383 || (_templateObject383 = _taggedTemplateLiteral6(["mysticality"])))) >= 30 ? $item(_templateObject393 || (_templateObject393 = _taggedTemplateLiteral6(["can of mixed everything"]))) : void 0,
-    familiar: $familiar(_templateObject403 || (_templateObject403 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))),
-    famequip: $item(_templateObject414 || (_templateObject414 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"]))),
-    modifier: args.level ? "moxie experience percent, 0.1 ml" : "item"
+  outfit: function() {
+    var outfit2 = {
+      equip: [$item(_templateObject383 || (_templateObject383 = _taggedTemplateLiteral6(["small peppermint-flavored sugar walking crook"])))],
+      familiar: $familiar(_templateObject393 || (_templateObject393 = _taggedTemplateLiteral6(["Skeleton of Crimbo Past"]))),
+      modifier: "item"
+    };
+    if ((0, import_kolmafia13.myBasestat)($stat(_templateObject403 || (_templateObject403 = _taggedTemplateLiteral6(["mysticality"])))) >= 30) {
+      var _outfit$equip;
+      (_outfit$equip = outfit2.equip) === null || _outfit$equip === void 0 || _outfit$equip.push($item(_templateObject414 || (_templateObject414 = _taggedTemplateLiteral6(["can of mixed everything"]))));
+    }
+    return args.level && (outfit2.modifier = "moxie experience percent, 0.1 ml"), outfit2;
   },
   choices: {
     1060: 5
