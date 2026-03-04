@@ -23,14 +23,17 @@ export function calculatePrice(item: Item): number {
   const valueMall = mallPrice(item);
   const knucklebonePrice = get("_crimboPastDailySpecialPrice");
 
+  const mallRatio = Math.round(valueMall / knucklebonePrice);
+  const pricegunLowRatio = Math.round(valuePricegunLow / knucklebonePrice);
+  const pricegunRatio = Math.round(valuePricegun / knucklebonePrice);
+
+  if (Math.max(mallRatio, pricegunLowRatio, pricegunRatio) < 3000) return -1;
+
   const input = userPrompt(
     `Knucklebones: ${knucklebonePrice}
-    Mall: ${prettyPrint(valueMall)} Per: ${Math.round(valueMall / knucklebonePrice)}
-    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${Math.round(valuePricegun / knucklebonePrice)}
-    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${Math.round(valuePricegunLow / knucklebonePrice)}`.replace(
-      /^\s+/gm,
-      "",
-    ),
+    Mall: ${prettyPrint(valueMall)} Per: ${mallRatio}
+    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${pricegunLowRatio}
+    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${pricegunRatio}`.replace(/^\s+/gm, ""),
     {
       Mall: "Mall",
       "Pricegun Low": "Pricegun Low",
