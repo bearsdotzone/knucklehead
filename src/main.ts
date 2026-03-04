@@ -1,4 +1,13 @@
-import { Args, CombatStrategy, Engine, Quest, step, Task } from "grimoire-kolmafia";
+import {
+  Args,
+  CombatStrategy,
+  Engine,
+  Outfit,
+  OutfitSpec,
+  Quest,
+  step,
+  Task,
+} from "grimoire-kolmafia";
 import {
   autosell,
   availableAmount,
@@ -271,11 +280,22 @@ const TaskFightSkeletons: Task = {
   combat: new CombatStrategy()
     .autoattack(Macro.step("pickpocket").attack().repeat())
     .macro(Macro.step("pickpocket").attack().repeat()),
-  outfit: {
-    offhand: myBasestat($stat`mysticality`) >= 30 ? $item`can of mixed everything` : undefined,
-    familiar: $familiar`Skeleton of Crimbo Past`,
-    famequip: $item`small peppermint-flavored sugar walking crook`,
-    modifier: args.level ? "moxie experience percent, 0.1 ml" : "item",
+  outfit: () => {
+    const outfit: OutfitSpec = {
+      equip: [$item`small peppermint-flavored sugar walking crook`],
+      familiar: $familiar`Skeleton of Crimbo Past`,
+      modifier: "item",
+    };
+
+    if (myBasestat($stat`mysticality`) >= 30) {
+      outfit["equip"]?.push($item`can of mixed everything`);
+    }
+
+    if (args.level) {
+      outfit["modifier"] = "moxie experience percent, 0.1 ml";
+    }
+
+    return outfit;
   },
   choices: {
     1060: 5,
