@@ -61,7 +61,7 @@ import {
   Macro,
   unequip,
 } from "libram";
-import { calculatePrice } from "./lib";
+import { calculatePrice, myKnucks } from "./lib";
 
 const args = Args.create("knucklehead", "", {
   ascend: Args.boolean({
@@ -338,10 +338,7 @@ const TaskPromptValue: Task = {
   completed: () => decision !== query.MAYBUY,
   ready: () => {
     visit($coinmaster`Skeleton of Crimbo Past`);
-    return (
-      availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`) >
-      get("_crimboPastDailySpecialPrice")
-    );
+    return myKnucks() >= get("_crimboPastDailySpecialPrice");
   },
 };
 

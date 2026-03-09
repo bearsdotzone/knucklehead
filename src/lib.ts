@@ -1,5 +1,9 @@
-import { Item, mallPrice, userPrompt, visitUrl } from "kolmafia";
-import { get } from "libram";
+import { availableAmount, Item, mallPrice, storageAmount, userPrompt, visitUrl } from "kolmafia";
+import { $item, get } from "libram";
+
+export function myKnucks() {
+  return availableAmount($item`knucklebone`) + storageAmount($item`knucklebone`);
+}
 
 function prettyPrint(num: number): string {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -30,10 +34,10 @@ export function calculatePrice(item: Item): number {
   if (Math.max(mallRatio, pricegunLowRatio, pricegunRatio) < 3000) return -1;
 
   const input = userPrompt(
-    `Knucklebones: ${knucklebonePrice}
+    `Knucklebones: ${knucklebonePrice} Available: ${myKnucks()}
     Mall: ${prettyPrint(valueMall)} Per: ${mallRatio}
-    Pricegun Low: ${prettyPrint(valuePricegun)} Per: ${pricegunLowRatio}
-    Pricegun Value: ${prettyPrint(valuePricegunLow)} Per: ${pricegunRatio}`.replace(/^\s+/gm, ""),
+    Pricegun Low: ${prettyPrint(valuePricegunLow)} Per: ${pricegunLowRatio}
+    Pricegun Value: ${prettyPrint(valuePricegun)} Per: ${pricegunRatio}`.replace(/^\s+/gm, ""),
     {
       Mall: "Mall",
       "Pricegun Low": "Pricegun Low",
